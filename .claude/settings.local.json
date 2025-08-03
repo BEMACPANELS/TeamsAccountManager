@@ -1,0 +1,47 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(where claude)",
+      "Bash(claude --version)",
+      "Bash(claude doctor)",
+      "Bash(copy:*)",
+      "Bash(cp:*)",
+      "WebFetch(domain:docs.anthropic.com)",
+      "Bash(claude mcp:*)",
+      "Bash(rm:*)",
+      "Bash(npx @modelcontextprotocol/server-filesystem:*)",
+      "Bash(claude config get)",
+      "WebFetch(domain:zenn.dev)",
+      "WebFetch(domain:qiita.com)",
+      "Bash(echo $HOME)",
+      "Bash(claude doctor:*)",
+      "Bash(where npx)",
+      "Bash(where uvx)",
+      "Bash(npx:*)",
+      "Bash(uvx:*)",
+      "mcp__serena__check_onboarding_performed",
+      "mcp__serena__get_current_config",
+      "mcp__serena__list_memories",
+      "mcp__serena__list_dir",
+      "mcp__serena__restart_language_server",
+      "WebFetch(domain:github.com)",
+      "Bash(reg query:*)",
+      "mcp__serena__activate_project",
+      "mcp__serena__onboarding",
+      "Bash(dir:*)",
+      "Bash(ls:*)",
+      "Bash(find:*)",
+      "Bash(where python)",
+      "Bash(cmd /c:*)",
+      "mcp__serena__read_file",
+      "Bash(git init:*)",
+      "Bash(git add:*)"
+    ],
+    "deny": []
+  },
+  "enableAllProjectMcpServers": false,
+  "enabledMcpjsonServers": [
+    "filesystem",
+    "serena"
+  ]
+}

@@ -1,0 +1,27 @@
+<Application x:Class="TeamsAccountManager.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!-- Material Design -->
+                <materialDesign:BundledTheme BaseTheme="Light" PrimaryColor="Blue" SecondaryColor="Teal" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesign3.Defaults.xaml" />
+                
+                <!-- 言語リソース（デフォルト：日本語） -->
+                <ResourceDictionary Source="Resources/Languages/Strings.ja-JP.xaml" />
+                
+                <!-- カスタムスタイル -->
+                <ResourceDictionary Source="Resources/Styles/MaterialDesign.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            
+            <!-- グローバルスタイル -->
+            <Style TargetType="Window">
+                <Setter Property="FontFamily" Value="Meiryo UI" />
+                <Setter Property="TextOptions.TextFormattingMode" Value="Display" />
+                <Setter Property="UseLayoutRounding" Value="True" />
+            </Style>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
