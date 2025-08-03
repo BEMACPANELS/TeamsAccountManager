@@ -2,8 +2,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Graph;
 using Microsoft.Graph.Models;
+using Microsoft.Kiota.Abstractions.Authentication;
+using Microsoft.Kiota.Abstractions;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using TeamsAccountManager.Models;
 
@@ -36,13 +40,29 @@ namespace TeamsAccountManager.Services
         {
             if (_graphClient == null && _authService.IsAuthenticated)
             {
-                _graphClient = new GraphServiceClient(new DelegateAuthenticationProvider((requestMessage) =>
-                {
-                    requestMessage.Headers.Authorization = 
-                        new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _authService.AccessToken);
-                    return Task.FromResult(requestMessage);
-                }));
+                var authProvider = new BaseBearerTokenAuthenticationProvider(new TokenProvider(_authService));
+                _graphClient = new GraphServiceClient(authProvider);
             }
+        }
+
+        /// <summary>
+        /// トークンプロバイダー内部クラス
+        /// </summary>
+        private class TokenProvider : IAccessTokenProvider
+        {
+            private readonly AuthenticationService _authService;
+
+            public TokenProvider(AuthenticationService authService)
+            {
+                _authService = authService;
+            }
+
+            public Task<string> GetAuthorizationTokenAsync(Uri uri, Dictionary<string, object>? additionalAuthenticationContext = null, CancellationToken cancellationToken = default)
+            {
+                return Task.FromResult(_authService.AccessToken ?? string.Empty);
+            }
+
+            public AllowedHostsValidator AllowedHostsValidator { get; } = new AllowedHostsValidator();
         }
 
         /// <summary>
@@ -72,7 +92,7 @@ namespace TeamsAccountManager.Services
         /// <summary>
         /// すべてのユーザーを取得
         /// </summary>
-        public async Task<List<Models.User>> GetAllUsersAsync(IProgress<int>? progress = null)
+        public async Task<List<Models.User>> GetUsersAsync(IProgress<int>? progress = null)
         {
             try
             {
@@ -102,7 +122,7 @@ namespace TeamsAccountManager.Services
                         requestConfiguration.QueryParameters.Orderby = new[] { "displayName" };
                     });
 
-                var response = await request;
+                var response = await request ?? new UserCollectionResponse();
                 var totalCount = 0;
 
                 while (response?.Value != null)
@@ -120,11 +140,12 @@ namespace TeamsAccountManager.Services
                     }
 
                     // 次のページがあるかチェック
-                    if (response.OdataNextLink != null)
+                    // 次のページを取得
+                    if (!string.IsNullOrEmpty(response.OdataNextLink))
                     {
-                        var nextPageRequest = new Uri(response.OdataNextLink);
-                        // 次ページの処理は今後実装
-                        break;
+                        response = await _graphClient.Users
+                            .WithUrl(response.OdataNextLink)
+                            .GetAsync();
                     }
                     else
                     {

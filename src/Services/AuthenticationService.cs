@@ -2,6 +2,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Client;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace TeamsAccountManager.Services
@@ -88,9 +89,24 @@ namespace TeamsAccountManager.Services
         }
 
         /// <summary>
+        /// ログイン
+        /// </summary>
+        public async Task<bool> LoginAsync()
+        {
+            // まずサイレント認証を試行
+            if (await TrySignInSilentlyAsync())
+            {
+                return true;
+            }
+
+            // サイレント認証が失敗したらインタラクティブ認証
+            return await SignInAsync();
+        }
+
+        /// <summary>
         /// インタラクティブ認証を実行
         /// </summary>
-        public async Task<bool> SignInAsync()
+        private async Task<bool> SignInAsync()
         {
             try
             {

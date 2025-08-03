@@ -1,3 +1,6 @@
+using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using TeamsAccountManager.ViewModels;
@@ -19,59 +22,93 @@ namespace TeamsAccountManager
             LanguageComboBox.SelectionChanged += OnLanguageChanged;
             
             // ログアウトボタンのイベント
-            LogoutButton.Click += OnLogoutClick;
+            LogoutButton.Click += async (s, e) => await _viewModel.LogoutCommand.ExecuteAsync(null);
+
+            // ViewModelのプロパティ変更を監視
+            _viewModel.PropertyChanged += OnViewModelPropertyChanged;
 
             // 初期画面の表示
-            ShowLoginView();
+            InitializeView();
+        }
+
+        private void InitializeView()
+        {
+            // 初期状態では常にログイン画面を表示
+            if (!_viewModel.IsAuthenticated)
+            {
+                ShowLoginView();
+            }
+            else
+            {
+                ShowUserListView();
+            }
+        }
+
+        private void OnViewModelPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(MainViewModel.IsAuthenticated))
+            {
+                if (_viewModel.IsAuthenticated)
+                {
+                    ShowUserListView();
+                }
+                else
+                {
+                    ShowLoginView();
+                }
+            }
         }
 
         private void OnLanguageChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (LanguageComboBox.SelectedItem is ComboBoxItem item)
+            if (LanguageComboBox.SelectedItem is ComboBoxItem item && item.Tag != null)
             {
-                var culture = item.Tag.ToString();
-                ChangeLanguage(culture!);
+                var culture = item.Tag.ToString()!;
+                _viewModel.ChangeLanguageCommand.Execute(culture);
             }
-        }
-
-        private void ChangeLanguage(string culture)
-        {
-            var dict = new ResourceDictionary();
-            dict.Source = new Uri($"Resources/Languages/Strings.{culture}.xaml", UriKind.Relative);
-
-            // 既存の言語リソースを削除
-            var oldDict = Application.Current.Resources.MergedDictionaries
-                .FirstOrDefault(d => d.Source != null && d.Source.OriginalString.Contains("Languages/Strings"));
-            
-            if (oldDict != null)
-            {
-                Application.Current.Resources.MergedDictionaries.Remove(oldDict);
-            }
-
-            // 新しい言語リソースを追加
-            Application.Current.Resources.MergedDictionaries.Add(dict);
-        }
-
-        private void OnLogoutClick(object sender, RoutedEventArgs e)
-        {
-            _viewModel.Logout();
-            ShowLoginView();
         }
 
         private void ShowLoginView()
         {
-            var loginView = ((App)Application.Current).Services.GetService(typeof(LoginView)) as LoginView;
+            var serviceProvider = ((App)Application.Current).Services;
+            var loginView = serviceProvider.GetRequiredService<LoginView>();
+            var loginViewModel = serviceProvider.GetRequiredService<LoginViewModel>();
+            
+            // ログイン成功イベントをサブスクライブ
+            loginViewModel.LoginSucceeded += OnLoginSucceeded;
+            loginView.DataContext = loginViewModel;
+            
             MainFrame.Navigate(loginView);
             LogoutButton.IsEnabled = false;
             UserNameText.Text = string.Empty;
         }
 
-        public void ShowUserListView(string userName)
+        private void ShowUserListView()
         {
-            var userListView = ((App)Application.Current).Services.GetService(typeof(UserListView)) as UserListView;
+            var serviceProvider = ((App)Application.Current).Services;
+            var userListView = serviceProvider.GetRequiredService<UserListView>();
+            var userListViewModel = serviceProvider.GetRequiredService<UserListViewModel>();
+            
+            userListView.DataContext = userListViewModel;
             MainFrame.Navigate(userListView);
+            
             LogoutButton.IsEnabled = true;
-            UserNameText.Text = userName;
+            UserNameText.Text = _viewModel.CurrentUserName;
+            
+            // ユーザーリストをロード
+            userListViewModel.LoadUsersCommand.Execute(null);
+        }
+
+        private void OnLoginSucceeded(object? sender, EventArgs e)
+        {
+            // ログイン成功時の処理
+            _viewModel.SetAuthenticatedUser(_viewModel.AuthService.CurrentUserName ?? "Unknown");
+            
+            // イベントのサブスクライブを解除
+            if (sender is LoginViewModel loginViewModel)
+            {
+                loginViewModel.LoginSucceeded -= OnLoginSucceeded;
+            }
         }
 
         public void UpdateStatus(string message, bool showProgress = false)

@@ -1,0 +1,78 @@
+<UserControl x:Class="TeamsAccountManager.Views.LoginView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    
+    <Grid>
+        <materialDesign:Card Padding="32" 
+                             HorizontalAlignment="Center" 
+                             VerticalAlignment="Center"
+                             Width="400">
+            <StackPanel>
+                <!-- ロゴ/アイコン -->
+                <materialDesign:PackIcon Kind="MicrosoftTeams" 
+                                         Width="64" 
+                                         Height="64" 
+                                         HorizontalAlignment="Center"
+                                         Foreground="{StaticResource PrimaryHueMidBrush}"
+                                         Margin="0,0,0,16"/>
+                
+                <!-- タイトル -->
+                <TextBlock Text="{DynamicResource AppTitle}" 
+                           Style="{StaticResource MaterialDesignHeadline5TextBlock}"
+                           HorizontalAlignment="Center"
+                           Margin="0,0,0,8"/>
+                
+                <!-- 説明 -->
+                <TextBlock Text="{DynamicResource LoginMessage}" 
+                           Style="{StaticResource MaterialDesignBody1TextBlock}"
+                           HorizontalAlignment="Center"
+                           TextWrapping="Wrap"
+                           Opacity="0.7"
+                           Margin="0,0,0,24"/>
+                
+                <!-- ログインボタン -->
+                <Button Command="{Binding LoginCommand}"
+                        IsEnabled="{Binding IsLoading, Converter={StaticResource InverseBooleanConverter}}"
+                        Style="{StaticResource MaterialDesignRaisedButton}"
+                        materialDesign:ButtonAssist.CornerRadius="4"
+                        Height="48"
+                        Margin="0,0,0,16">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="Microsoft" 
+                                                 VerticalAlignment="Center"
+                                                 Margin="0,0,8,0"/>
+                        <TextBlock Text="{DynamicResource Login}" 
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+                
+                <!-- ステータスメッセージ -->
+                <TextBlock Text="{Binding StatusMessage}"
+                           Style="{StaticResource MaterialDesignBody2TextBlock}"
+                           HorizontalAlignment="Center"
+                           TextWrapping="Wrap"
+                           Margin="0,8,0,0">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock" BasedOn="{StaticResource MaterialDesignBody2TextBlock}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding StatusMessage}" Value="">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+                
+                <!-- プログレスバー -->
+                <ProgressBar IsIndeterminate="True"
+                             Margin="0,16,0,0"
+                             Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+            </StackPanel>
+        </materialDesign:Card>
+    </Grid>
+</UserControl>

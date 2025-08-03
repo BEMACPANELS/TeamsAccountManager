@@ -30,7 +30,7 @@
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
     
     <!-- Excel/CSV -->
-    <PackageReference Include="EPPlus" Version="7.0.10" />
+    <PackageReference Include="ClosedXML" Version="0.104.1" />
     <PackageReference Include="CsvHelper" Version="31.0.2" />
     
     <!-- DI -->
@@ -53,13 +53,13 @@
 
   <ItemGroup>
     <!-- リソースファイル -->
-    <Page Update="Resources\Languages\Strings.ja-JP.xaml">
+    <Page Update="Resources\Languages\Resources.ja-JP.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Resources\Languages\Strings.vi-VN.xaml">
+    <Page Update="Resources\Languages\Resources.vi-VN.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Resources\Languages\Strings.en-US.xaml">
+    <Page Update="Resources\Languages\Resources.en-US.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

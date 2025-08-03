@@ -1,0 +1,204 @@
+<UserControl x:Class="TeamsAccountManager.Views.UserListView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="1000">
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <!-- ツールバー -->
+        <materialDesign:Card Grid.Row="0" Padding="16" Margin="16,16,16,8">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <!-- 検索・フィルター -->
+                <StackPanel Grid.Column="0" Orientation="Horizontal">
+                    <!-- 検索ボックス -->
+                    <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                             materialDesign:HintAssist.Hint="{DynamicResource SearchPlaceholder}"
+                             Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                             Width="300"
+                             Margin="0,0,16,0">
+                        <TextBox.InputBindings>
+                            <KeyBinding Key="Enter" Command="{Binding RefreshCommand}"/>
+                        </TextBox.InputBindings>
+                    </TextBox>
+                    
+                    <!-- 部署フィルター -->
+                    <ComboBox ItemsSource="{Binding Departments}"
+                              SelectedItem="{Binding SelectedDepartment}"
+                              materialDesign:HintAssist.Hint="{DynamicResource FilterByDepartment}"
+                              Style="{StaticResource MaterialDesignFloatingHintComboBox}"
+                              Width="200"
+                              Margin="0,0,16,0"/>
+                    
+                    <!-- アクティブユーザーフィルター -->
+                    <CheckBox Content="{DynamicResource ShowActive}"
+                              IsChecked="{Binding ShowActiveOnly}"
+                              VerticalAlignment="Center"
+                              Margin="0,0,16,0"/>
+                </StackPanel>
+                
+                <!-- アクションボタン -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <!-- 更新ボタン -->
+                    <Button Command="{Binding RefreshCommand}"
+                            Style="{StaticResource MaterialDesignFlatButton}"
+                            ToolTip="{DynamicResource Refresh}"
+                            Margin="0,0,8,0">
+                        <materialDesign:PackIcon Kind="Refresh"/>
+                    </Button>
+                    
+                    <!-- エクスポートメニュー -->
+                    <materialDesign:PopupBox PlacementMode="BottomAndAlignRightEdges"
+                                             Margin="0,0,8,0">
+                        <StackPanel>
+                            <Button Command="{Binding ExportToExcelCommand}">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="MicrosoftExcel" Margin="0,0,8,0"/>
+                                    <TextBlock Text="{DynamicResource ExportToExcel}"/>
+                                </StackPanel>
+                            </Button>
+                            <Button Command="{Binding ExportToCsvCommand}">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="FileDelimited" Margin="0,0,8,0"/>
+                                    <TextBlock Text="{DynamicResource ExportToCsv}"/>
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                    </materialDesign:PopupBox>
+                    
+                    <!-- インポートメニュー -->
+                    <materialDesign:PopupBox PlacementMode="BottomAndAlignRightEdges">
+                        <StackPanel>
+                            <Button Command="{Binding ImportFromExcelCommand}">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="MicrosoftExcel" Margin="0,0,8,0"/>
+                                    <TextBlock Text="{DynamicResource ImportFromExcel}"/>
+                                </StackPanel>
+                            </Button>
+                            <Button Command="{Binding ImportFromCsvCommand}">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="FileDelimited" Margin="0,0,8,0"/>
+                                    <TextBlock Text="{DynamicResource ImportFromCsv}"/>
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                    </materialDesign:PopupBox>
+                </StackPanel>
+            </Grid>
+        </materialDesign:Card>
+        
+        <!-- ユーザーリスト -->
+        <materialDesign:Card Grid.Row="1" Margin="16,8,16,8">
+            <DataGrid ItemsSource="{Binding UsersView}"
+                      SelectedItem="{Binding SelectedUser}"
+                      AutoGenerateColumns="False"
+                      CanUserAddRows="False"
+                      CanUserDeleteRows="False"
+                      materialDesign:DataGridAssist.CellPadding="13 8 8 8"
+                      materialDesign:DataGridAssist.ColumnHeaderPadding="8">
+                
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="{DynamicResource DisplayName}"
+                                        Binding="{Binding DisplayName}"
+                                        Width="200"/>
+                    
+                    <DataGridTextColumn Header="{DynamicResource Email}"
+                                        Binding="{Binding Email}"
+                                        Width="250"/>
+                    
+                    <DataGridTextColumn Header="{DynamicResource Department}"
+                                        Binding="{Binding Department}"
+                                        Width="150"/>
+                    
+                    <DataGridTextColumn Header="{DynamicResource JobTitle}"
+                                        Binding="{Binding JobTitle}"
+                                        Width="150"/>
+                    
+                    <DataGridTextColumn Header="{DynamicResource OfficeLocation}"
+                                        Binding="{Binding OfficeLocation}"
+                                        Width="120"/>
+                    
+                    <DataGridTextColumn Header="{DynamicResource PhoneNumber}"
+                                        Binding="{Binding PhoneNumber}"
+                                        Width="120"/>
+                    
+                    <DataGridCheckBoxColumn Header="{DynamicResource AccountEnabled}"
+                                            Binding="{Binding AccountEnabled}"
+                                            Width="100"
+                                            IsReadOnly="True"/>
+                    
+                    <DataGridTextColumn Header="{DynamicResource LastSignIn}"
+                                        Binding="{Binding LastSignIn, StringFormat='{}{0:yyyy-MM-dd HH:mm}'}"
+                                        Width="150"/>
+                </DataGrid.Columns>
+                
+                <DataGrid.Style>
+                    <Style TargetType="DataGrid" BasedOn="{StaticResource MaterialDesignDataGrid}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsLoading}" Value="True">
+                                <Setter Property="Opacity" Value="0.5"/>
+                                <Setter Property="IsEnabled" Value="False"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.Style>
+            </DataGrid>
+            
+            <!-- ローディングインジケーター -->
+            <ProgressBar IsIndeterminate="True"
+                         VerticalAlignment="Center"
+                         HorizontalAlignment="Center"
+                         Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
+                         Style="{StaticResource MaterialDesignCircularProgressBar}"
+                         Value="0"/>
+        </materialDesign:Card>
+        
+        <!-- ステータスバー -->
+        <materialDesign:Card Grid.Row="2" Padding="8,4" Margin="16,8,16,16">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <TextBlock Grid.Column="0" VerticalAlignment="Center">
+                    <TextBlock.Text>
+                        <MultiBinding StringFormat="{}{0}: {1}">
+                            <Binding Source="{DynamicResource TotalUsers}"/>
+                            <Binding Path="Users.Count"/>
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                
+                <TextBlock Grid.Column="1" VerticalAlignment="Center">
+                    <TextBlock.Text>
+                        <MultiBinding StringFormat="{}{0}: {1}">
+                            <Binding Source="{DynamicResource ActiveUsers}"/>
+                            <Binding Path="Users.Count" 
+                                     Converter="{StaticResource ActiveUsersCountConverter}"/>
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+            </Grid>
+        </materialDesign:Card>
+        <!-- スナックバー -->
+        <materialDesign:Snackbar x:Name="MessageSnackbar" 
+                                 MessageQueue="{materialDesign:MessageQueue}"
+                                 HorizontalAlignment="Center"
+                                 VerticalAlignment="Bottom"
+                                 Margin="16"/>
+    </Grid>
+</UserControl>

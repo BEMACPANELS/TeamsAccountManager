@@ -1,11 +1,14 @@
 using System;
+using System.ComponentModel;
+using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace TeamsAccountManager.Models
 {
     /// <summary>
     /// Microsoft 365ユーザー情報モデル
     /// </summary>
-    public class User
+    public class User : INotifyPropertyChanged
     {
         /// <summary>
         /// ユーザーの一意識別子
@@ -122,6 +125,31 @@ namespace TeamsAccountManager.Models
         public bool IsSelected { get; set; }
 
         /// <summary>
+        /// 最終サインイン日時
+        /// </summary>
+        public DateTime? LastSignIn { get; set; }
+
+        /// <summary>
+        /// メールアドレス（Mailがnullの場合はUserPrincipalNameを返す）
+        /// </summary>
+        public string Email => Mail ?? UserPrincipalName;
+
+        /// <summary>
+        /// 電話番号（ビジネス電話または携帯電話）
+        /// </summary>
+        public string PhoneNumber
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(MobilePhone))
+                    return MobilePhone;
+                if (BusinessPhones != null && BusinessPhones.Length > 0)
+                    return BusinessPhones[0];
+                return string.Empty;
+            }
+        }
+
+        /// <summary>
         /// コンストラクタ
         /// </summary>
         public User()
@@ -214,8 +242,22 @@ namespace TeamsAccountManager.Models
                 AccountEnabled = AccountEnabled,
                 IsModified = IsModified,
                 ErrorMessage = ErrorMessage,
-                IsSelected = IsSelected
+                IsSelected = IsSelected,
+                LastSignIn = LastSignIn
             };
+        }
+
+        /// <summary>
+        /// プロパティ変更通知イベント
+        /// </summary>
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        /// <summary>
+        /// プロパティ変更通知
+        /// </summary>
+        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

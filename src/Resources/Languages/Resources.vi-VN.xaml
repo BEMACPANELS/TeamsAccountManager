@@ -1,0 +1,93 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib">
+    
+    <!-- Ứng dụng chung -->
+    <system:String x:Key="AppTitle">Trình quản lý tài khoản Teams</system:String>
+    <system:String x:Key="Language">Ngôn ngữ</system:String>
+    <system:String x:Key="Ready">Sẵn sàng</system:String>
+    <system:String x:Key="Loading">Đang tải...</system:String>
+    <system:String x:Key="Error">Lỗi</system:String>
+    <system:String x:Key="Warning">Cảnh báo</system:String>
+    <system:String x:Key="Information">Thông tin</system:String>
+    <system:String x:Key="Confirm">Xác nhận</system:String>
+    <system:String x:Key="Yes">Có</system:String>
+    <system:String x:Key="No">Không</system:String>
+    <system:String x:Key="OK">OK</system:String>
+    <system:String x:Key="Cancel">Hủy</system:String>
+    <system:String x:Key="Save">Lưu</system:String>
+    <system:String x:Key="Close">Đóng</system:String>
+    
+    <!-- Xác thực -->
+    <system:String x:Key="Login">Đăng nhập</system:String>
+    <system:String x:Key="Logout">Đăng xuất</system:String>
+    <system:String x:Key="LoginMessage">Vui lòng đăng nhập bằng tài khoản Microsoft</system:String>
+    <system:String x:Key="LoginSuccess">Đăng nhập thành công</system:String>
+    <system:String x:Key="LoginFailed">Đăng nhập thất bại</system:String>
+    <system:String x:Key="LogoutConfirm">Bạn có chắc chắn muốn đăng xuất?</system:String>
+    
+    <!-- Quản lý người dùng -->
+    <system:String x:Key="Users">Người dùng</system:String>
+    <system:String x:Key="UserList">Danh sách người dùng</system:String>
+    <system:String x:Key="DisplayName">Tên hiển thị</system:String>
+    <system:String x:Key="Email">Email</system:String>
+    <system:String x:Key="Department">Phòng ban</system:String>
+    <system:String x:Key="JobTitle">Chức vụ</system:String>
+    <system:String x:Key="OfficeLocation">Vị trí văn phòng</system:String>
+    <system:String x:Key="PhoneNumber">Số điện thoại</system:String>
+    <system:String x:Key="AccountEnabled">Tài khoản hoạt động</system:String>
+    <system:String x:Key="LastSignIn">Lần đăng nhập cuối</system:String>
+    
+    <!-- Tìm kiếm & Lọc -->
+    <system:String x:Key="Search">Tìm kiếm</system:String>
+    <system:String x:Key="SearchPlaceholder">Tìm theo tên hoặc email...</system:String>
+    <system:String x:Key="Filter">Lọc</system:String>
+    <system:String x:Key="FilterByDepartment">Lọc theo phòng ban</system:String>
+    <system:String x:Key="FilterByStatus">Lọc theo trạng thái</system:String>
+    <system:String x:Key="ClearFilter">Xóa bộ lọc</system:String>
+    <system:String x:Key="ShowActive">Chỉ người dùng hoạt động</system:String>
+    <system:String x:Key="ShowInactive">Chỉ người dùng không hoạt động</system:String>
+    <system:String x:Key="ShowAll">Hiển thị tất cả</system:String>
+    
+    <!-- Thao tác dữ liệu -->
+    <system:String x:Key="Import">Nhập</system:String>
+    <system:String x:Key="Export">Xuất</system:String>
+    <system:String x:Key="ExportToExcel">Xuất sang Excel</system:String>
+    <system:String x:Key="ExportToCsv">Xuất sang CSV</system:String>
+    <system:String x:Key="ImportFromExcel">Nhập từ Excel</system:String>
+    <system:String x:Key="ImportFromCsv">Nhập từ CSV</system:String>
+    <system:String x:Key="SelectFile">Chọn tệp</system:String>
+    <system:String x:Key="ExportSuccess">Xuất dữ liệu thành công</system:String>
+    <system:String x:Key="ImportSuccess">Nhập dữ liệu thành công</system:String>
+    <system:String x:Key="ExportFailed">Xuất dữ liệu thất bại</system:String>
+    <system:String x:Key="ImportFailed">Nhập dữ liệu thất bại</system:String>
+    
+    <!-- Chỉnh sửa -->
+    <system:String x:Key="Edit">Chỉnh sửa</system:String>
+    <system:String x:Key="BatchEdit">Chỉnh sửa hàng loạt</system:String>
+    <system:String x:Key="Update">Cập nhật</system:String>
+    <system:String x:Key="UpdateSuccess">Cập nhật thành công</system:String>
+    <system:String x:Key="UpdateFailed">Cập nhật thất bại</system:String>
+    <system:String x:Key="NoChanges">Không có thay đổi</system:String>
+    <system:String x:Key="ConfirmUpdate">Áp dụng các thay đổi sau?</system:String>
+    <system:String x:Key="SelectUsers">Vui lòng chọn người dùng</system:String>
+    
+    <!-- Thống kê & Báo cáo -->
+    <system:String x:Key="Statistics">Thống kê</system:String>
+    <system:String x:Key="TotalUsers">Tổng số người dùng</system:String>
+    <system:String x:Key="ActiveUsers">Người dùng hoạt động</system:String>
+    <system:String x:Key="InactiveUsers">Người dùng không hoạt động</system:String>
+    <system:String x:Key="UsersByDepartment">Người dùng theo phòng ban</system:String>
+    
+    <!-- Thông báo lỗi -->
+    <system:String x:Key="NetworkError">Đã xảy ra lỗi mạng</system:String>
+    <system:String x:Key="AuthenticationError">Đã xảy ra lỗi xác thực</system:String>
+    <system:String x:Key="PermissionError">Không đủ quyền</system:String>
+    <system:String x:Key="UnknownError">Đã xảy ra lỗi không xác định</system:String>
+    <system:String x:Key="RetryMessage">Vui lòng thử lại</system:String>
+    
+    <!-- Loại tệp -->
+    <system:String x:Key="ExcelFiles">Tệp Excel</system:String>
+    <system:String x:Key="CsvFiles">Tệp CSV</system:String>
+    <system:String x:Key="AllFiles">Tất cả các tệp</system:String>
+</ResourceDictionary>

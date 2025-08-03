@@ -1,0 +1,93 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib">
+    
+    <!-- Application General -->
+    <system:String x:Key="AppTitle">Teams Account Manager</system:String>
+    <system:String x:Key="Language">Language</system:String>
+    <system:String x:Key="Ready">Ready</system:String>
+    <system:String x:Key="Loading">Loading...</system:String>
+    <system:String x:Key="Error">Error</system:String>
+    <system:String x:Key="Warning">Warning</system:String>
+    <system:String x:Key="Information">Information</system:String>
+    <system:String x:Key="Confirm">Confirm</system:String>
+    <system:String x:Key="Yes">Yes</system:String>
+    <system:String x:Key="No">No</system:String>
+    <system:String x:Key="OK">OK</system:String>
+    <system:String x:Key="Cancel">Cancel</system:String>
+    <system:String x:Key="Save">Save</system:String>
+    <system:String x:Key="Close">Close</system:String>
+    
+    <!-- Authentication -->
+    <system:String x:Key="Login">Login</system:String>
+    <system:String x:Key="Logout">Logout</system:String>
+    <system:String x:Key="LoginMessage">Please login with your Microsoft account</system:String>
+    <system:String x:Key="LoginSuccess">Login successful</system:String>
+    <system:String x:Key="LoginFailed">Login failed</system:String>
+    <system:String x:Key="LogoutConfirm">Are you sure you want to logout?</system:String>
+    
+    <!-- User Management -->
+    <system:String x:Key="Users">Users</system:String>
+    <system:String x:Key="UserList">User List</system:String>
+    <system:String x:Key="DisplayName">Display Name</system:String>
+    <system:String x:Key="Email">Email</system:String>
+    <system:String x:Key="Department">Department</system:String>
+    <system:String x:Key="JobTitle">Job Title</system:String>
+    <system:String x:Key="OfficeLocation">Office Location</system:String>
+    <system:String x:Key="PhoneNumber">Phone Number</system:String>
+    <system:String x:Key="AccountEnabled">Account Enabled</system:String>
+    <system:String x:Key="LastSignIn">Last Sign In</system:String>
+    
+    <!-- Search & Filter -->
+    <system:String x:Key="Search">Search</system:String>
+    <system:String x:Key="SearchPlaceholder">Search by name or email...</system:String>
+    <system:String x:Key="Filter">Filter</system:String>
+    <system:String x:Key="FilterByDepartment">Filter by Department</system:String>
+    <system:String x:Key="FilterByStatus">Filter by Status</system:String>
+    <system:String x:Key="ClearFilter">Clear Filter</system:String>
+    <system:String x:Key="ShowActive">Active Users Only</system:String>
+    <system:String x:Key="ShowInactive">Inactive Users Only</system:String>
+    <system:String x:Key="ShowAll">Show All</system:String>
+    
+    <!-- Data Operations -->
+    <system:String x:Key="Import">Import</system:String>
+    <system:String x:Key="Export">Export</system:String>
+    <system:String x:Key="ExportToExcel">Export to Excel</system:String>
+    <system:String x:Key="ExportToCsv">Export to CSV</system:String>
+    <system:String x:Key="ImportFromExcel">Import from Excel</system:String>
+    <system:String x:Key="ImportFromCsv">Import from CSV</system:String>
+    <system:String x:Key="SelectFile">Select File</system:String>
+    <system:String x:Key="ExportSuccess">Export completed successfully</system:String>
+    <system:String x:Key="ImportSuccess">Import completed successfully</system:String>
+    <system:String x:Key="ExportFailed">Export failed</system:String>
+    <system:String x:Key="ImportFailed">Import failed</system:String>
+    
+    <!-- Edit -->
+    <system:String x:Key="Edit">Edit</system:String>
+    <system:String x:Key="BatchEdit">Batch Edit</system:String>
+    <system:String x:Key="Update">Update</system:String>
+    <system:String x:Key="UpdateSuccess">Update completed successfully</system:String>
+    <system:String x:Key="UpdateFailed">Update failed</system:String>
+    <system:String x:Key="NoChanges">No changes</system:String>
+    <system:String x:Key="ConfirmUpdate">Apply the following changes?</system:String>
+    <system:String x:Key="SelectUsers">Please select users</system:String>
+    
+    <!-- Statistics & Reports -->
+    <system:String x:Key="Statistics">Statistics</system:String>
+    <system:String x:Key="TotalUsers">Total Users</system:String>
+    <system:String x:Key="ActiveUsers">Active Users</system:String>
+    <system:String x:Key="InactiveUsers">Inactive Users</system:String>
+    <system:String x:Key="UsersByDepartment">Users by Department</system:String>
+    
+    <!-- Error Messages -->
+    <system:String x:Key="NetworkError">A network error occurred</system:String>
+    <system:String x:Key="AuthenticationError">An authentication error occurred</system:String>
+    <system:String x:Key="PermissionError">Insufficient permissions</system:String>
+    <system:String x:Key="UnknownError">An unknown error occurred</system:String>
+    <system:String x:Key="RetryMessage">Please try again</system:String>
+    
+    <!-- File Types -->
+    <system:String x:Key="ExcelFiles">Excel Files</system:String>
+    <system:String x:Key="CsvFiles">CSV Files</system:String>
+    <system:String x:Key="AllFiles">All Files</system:String>
+</ResourceDictionary>
