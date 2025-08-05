@@ -1,7 +1,9 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Client;
+using Microsoft.Identity.Client.Extensions.Msal;
 using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -46,6 +48,41 @@ namespace TeamsAccountManager.Services
                     .WithRedirectUri(redirectUri)
                     .WithLogging(LogCallback, Microsoft.Identity.Client.LogLevel.Verbose, true)
                     .Build();
+                    
+                // トークンキャッシュの設定
+                _ = EnableTokenCacheAsync();
+            }
+        }
+        
+        /// <summary>
+        /// トークンキャッシュを有効化
+        /// </summary>
+        private async Task EnableTokenCacheAsync()
+        {
+            try
+            {
+                // キャッシュファイルの保存先
+                var cacheFileName = "teams_account_manager_cache.dat";
+                var cacheDir = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), 
+                    "TeamsAccountManager");
+                
+                Directory.CreateDirectory(cacheDir);
+                
+                var storageProperties = new StorageCreationPropertiesBuilder(
+                    cacheFileName,
+                    cacheDir)
+                    .WithUnprotectedFile() // 簡単のため暗号化なし（本番環境では暗号化推奨）
+                    .Build();
+                
+                var cacheHelper = await MsalCacheHelper.CreateAsync(storageProperties);
+                cacheHelper.RegisterCache(_app.UserTokenCache);
+                
+                _logger.LogInformation("トークンキャッシュを有効化しました");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "トークンキャッシュの有効化に失敗しました");
             }
         }
 

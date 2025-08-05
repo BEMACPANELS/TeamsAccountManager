@@ -5,7 +5,8 @@ param(
     [ValidateSet("Debug", "Release")]
     [string]$Configuration = "Release",
     [switch]$Publish,
-    [switch]$Clean
+    [switch]$Clean,
+    [switch]$SingleFile
 )
 
 # 色付きメッセージ出力
@@ -84,6 +85,50 @@ if ($Publish) {
     Write-ColorMessage "`n📋 出力ファイル:" "Yellow"
     Get-ChildItem $publishPath | ForEach-Object {
         Write-Host "  - $($_.Name)"
+    }
+}
+
+# 単一実行ファイルビルド
+if ($SingleFile) {
+    Write-ColorMessage "`n📦 単一実行ファイルを作成中..." "Yellow"
+    
+    # srcディレクトリに移動
+    Push-Location (Join-Path $PSScriptRoot "src")
+    
+    try {
+        # クリーンビルド
+        if ($Clean) {
+            Write-ColorMessage "🧹 クリーンを実行中..." "Yellow"
+            dotnet clean
+            Check-Error
+        }
+        
+        # 単一ファイルとしてパブリッシュ
+        dotnet publish -c $Configuration -r win-x64 --self-contained false `
+            -p:PublishSingleFile=true `
+            -p:IncludeNativeLibrariesForSelfExtract=true
+        
+        Check-Error
+        
+        # 結果確認
+        $singleFilePublishPath = "bin\$Configuration\net8.0-windows\win-x64\publish"
+        if (Test-Path "$singleFilePublishPath\TeamsAccountManager.exe") {
+            Write-ColorMessage "`n✅ 単一実行ファイルの作成が完了しました！" "Green"
+            Write-ColorMessage "📁 出力先: $singleFilePublishPath" "Cyan"
+            
+            # ファイル一覧表示
+            Write-ColorMessage "`n📋 生成されたファイル:" "Yellow"
+            Get-ChildItem $singleFilePublishPath | Format-Table Name, @{Name="Size(MB)";Expression={[math]::Round($_.Length/1MB, 2)}} -AutoSize
+            
+            # exeファイルのサイズ表示
+            $exeSize = (Get-Item "$singleFilePublishPath\TeamsAccountManager.exe").Length / 1MB
+            Write-ColorMessage "`n💾 TeamsAccountManager.exe サイズ: $([math]::Round($exeSize, 2)) MB" "Cyan"
+        } else {
+            Write-ColorMessage "❌ 単一実行ファイルの作成に失敗しました！" "Red"
+        }
+    }
+    finally {
+        Pop-Location
     }
 }
 

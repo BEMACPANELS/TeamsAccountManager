@@ -21,11 +21,13 @@ namespace TeamsAccountManager
             {
                 base.OnStartup(e);
                 
-                // コンソールウィンドウを表示（常に表示）
+                // コンソールウィンドウを表示（デバッグ時のみ）
+                #if DEBUG
                 AllocConsole();
                 Console.WriteLine("=== Teams Account Manager - Debug Console ===");
                 Console.WriteLine($"起動時刻: {DateTime.Now:yyyy/MM/dd HH:mm:ss}");
-                Console.WriteLine($"ビルド構成: {(System.Diagnostics.Debugger.IsAttached ? "Debug" : "Release")}");
+                Console.WriteLine($"ビルド構成: Debug");
+                #endif
                 
                 // DIコンテナの設定
                 ConfigureServices();

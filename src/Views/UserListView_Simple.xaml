@@ -90,8 +90,10 @@
                           GridLinesVisibility="Horizontal"
                           HeadersVisibility="Column"
                           SelectionMode="Extended"
+                          SelectionUnit="Cell"
                           CellEditEnding="DataGrid_CellEditEnding"
                           SelectionChanged="DataGrid_SelectionChanged"
+                          PreviewKeyDown="DataGrid_PreviewKeyDown"
                           Margin="1,1,10,1"
                           ScrollViewer.HorizontalScrollBarVisibility="Auto"
                           ScrollViewer.VerticalScrollBarVisibility="Auto">

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
 using Microsoft.Extensions.Logging;
 using TeamsAccountManager.Models;
 using TeamsAccountManager.Services;
@@ -311,13 +312,36 @@ namespace TeamsAccountManager.Views
                     
                     if (newValue != null)
                     {
-                        // 変更を追跡
-                        if (!changedUsers.ContainsKey(user.Id))
+                        // 現在の値を取得
+                        var property = user.GetType().GetProperty(propertyName);
+                        if (property != null)
                         {
-                            changedUsers[user.Id] = new Dictionary<string, object>();
+                            var currentValue = property.GetValue(user);
+                            
+                            // 値が変更された場合のみ追跡
+                            var currentValueStr = currentValue?.ToString() ?? "";
+                            var newValueStr = newValue?.ToString() ?? "";
+                            
+                            if (currentValueStr != newValueStr)
+                            {
+                                // 変更を追跡
+                                if (!changedUsers.ContainsKey(user.Id))
+                                {
+                                    changedUsers[user.Id] = new Dictionary<string, object>();
+                                }
+                                
+                                changedUsers[user.Id][propertyName] = newValue!;
+                            }
+                            else if (changedUsers.ContainsKey(user.Id) && changedUsers[user.Id].ContainsKey(propertyName))
+                            {
+                                // 元の値に戻った場合は変更リストから削除
+                                changedUsers[user.Id].Remove(propertyName);
+                                if (changedUsers[user.Id].Count == 0)
+                                {
+                                    changedUsers.Remove(user.Id);
+                                }
+                            }
                         }
-                        
-                        changedUsers[user.Id][propertyName] = newValue;
                         
                         // 保存ボタンを有効化
                         SaveButton.IsEnabled = changedUsers.Count > 0;
@@ -785,6 +809,119 @@ namespace TeamsAccountManager.Views
                         // トランザクション中の場合は無視
                     }
                 }), System.Windows.Threading.DispatcherPriority.Background);
+            }
+        }
+        
+        private void DataGrid_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            // Ctrl+V でペースト
+            if (e.Key == Key.V && (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
+            {
+                PasteFromClipboard();
+                e.Handled = true;
+            }
+        }
+        
+        private void PasteFromClipboard()
+        {
+            try
+            {
+                // クリップボードからテキストを取得
+                if (!Clipboard.ContainsText())
+                {
+                    return;
+                }
+                
+                var clipboardText = Clipboard.GetText();
+                var lines = clipboardText.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                
+                // 選択されているセルを取得
+                var selectedCells = UsersDataGrid.SelectedCells;
+                if (selectedCells.Count == 0)
+                {
+                    return;
+                }
+                
+                // 最初のペースト値（複数セル選択時は同じ値をペースト）
+                var pasteValue = lines.Length > 0 ? lines[0].Trim() : "";
+                
+                // 選択されたすべてのセルに対してペースト
+                foreach (var cell in selectedCells)
+                {
+                    var column = cell.Column;
+                    var user = cell.Item as User;
+                    
+                    if (user == null || column == null)
+                    {
+                        continue;
+                    }
+                    
+                    // 列のバインディングプロパティを取得
+                    var binding = (column as DataGridBoundColumn)?.Binding as Binding;
+                    if (binding == null)
+                    {
+                        continue;
+                    }
+                    
+                    var propertyName = binding.Path.Path;
+                    
+                    // 編集可能な列かチェック
+                    if (column.IsReadOnly || propertyName == "Id" || propertyName == "UserPrincipalName" || 
+                        propertyName == "Email" || propertyName == "EmailDomain" || propertyName == "IsGuest" || 
+                        propertyName == "HasLicense")
+                    {
+                        continue;
+                    }
+                    
+                    // プロパティに値を設定
+                    var property = user.GetType().GetProperty(propertyName);
+                    if (property != null && property.CanWrite)
+                    {
+                        try
+                        {
+                            // 現在の値を取得
+                            var currentValue = property.GetValue(user);
+                            
+                            // 型変換
+                            object? convertedValue = pasteValue;
+                            if (property.PropertyType == typeof(bool?))
+                            {
+                                convertedValue = string.IsNullOrEmpty(pasteValue) ? null : (bool?)bool.Parse(pasteValue);
+                            }
+                            
+                            // 値が変更された場合のみ更新
+                            var currentValueStr = currentValue?.ToString() ?? "";
+                            var newValueStr = convertedValue?.ToString() ?? pasteValue;
+                            
+                            if (currentValueStr != newValueStr)
+                            {
+                                property.SetValue(user, convertedValue);
+                                
+                                // 変更を追跡
+                                if (!changedUsers.ContainsKey(user.Id))
+                                {
+                                    changedUsers[user.Id] = new Dictionary<string, object>();
+                                }
+                                changedUsers[user.Id][propertyName] = convertedValue ?? pasteValue;
+                            }
+                        }
+                        catch
+                        {
+                            // 型変換エラーは無視して続行
+                            continue;
+                        }
+                    }
+                }
+                
+                // UI更新
+                UsersDataGrid.Items.Refresh();
+                UpdateStatus();
+                SaveButton.IsEnabled = changedUsers.Count > 0;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"ペースト中にエラーが発生しました:\n{ex.Message}", "エラー", 
+                    MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
     }

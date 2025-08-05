@@ -1,7 +1,9 @@
 using System;
 using System.Globalization;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using Microsoft.Extensions.Logging;
 using TeamsAccountManager.Services;
 
 namespace TeamsAccountManager
@@ -22,6 +24,56 @@ namespace TeamsAccountManager
             // 初期状態表示
             UpdateStatus("準備完了", false);
             UserInfoTextBlock.Text = "未ログイン";
+            
+            // 自動ログインを試行
+            _ = TryAutoLoginAsync();
+        }
+        
+        private async Task TryAutoLoginAsync()
+        {
+            try
+            {
+                await Task.Delay(500); // UIの初期化を待つ
+                
+                UpdateStatus("自動ログインを試行中...", true);
+                
+                var authService = App.GetService<AuthenticationService>();
+                
+                // サイレント認証を試行
+                if (await authService.TrySignInSilentlyAsync())
+                {
+                    // ログイン成功
+                    UserInfoTextBlock.Text = authService.CurrentUserName ?? "不明なユーザー";
+                    
+                    // 権限表示も更新
+                    PermissionTextBlock.Text = "読み書き可能";
+                    
+                    // UserListViewへ遷移
+                    var userListView = new Views.UserListView_Simple();
+                    NavigateToContent(userListView);
+                    
+                    UpdateStatus("自動ログインしました", false);
+                }
+                else
+                {
+                    // サイレント認証失敗 - ログイン画面を表示
+                    var loginView = new Views.LoginView();
+                    NavigateToContent(loginView);
+                    
+                    UpdateStatus("ログインしてください", false);
+                }
+            }
+            catch (Exception ex)
+            {
+                var logger = App.GetService<ILoggerFactory>().CreateLogger<MainWindow>();
+                logger.LogError(ex, "自動ログイン試行中にエラーが発生");
+                
+                // エラー時はログイン画面を表示
+                var loginView = new Views.LoginView();
+                NavigateToContent(loginView);
+                
+                UpdateStatus("準備完了", false);
+            }
         }
         
         private void OnLanguageChanged(object sender, SelectionChangedEventArgs e)
