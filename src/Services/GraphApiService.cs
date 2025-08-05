@@ -115,7 +115,8 @@ namespace TeamsAccountManager.Services
                 {
                     "id", "displayName", "givenName", "surname", "mail", "userPrincipalName",
                     "businessPhones", "mobilePhone", "officeLocation", "department", 
-                    "jobTitle", "companyName", "country", "usageLocation", "accountEnabled"
+                    "jobTitle", "companyName", "country", "usageLocation", "accountEnabled",
+                    "assignedLicenses"
                 };
                 _logger.LogInformation($"GetUsersAsync: 取得プロパティ数 = {selectProperties.Length}");
 

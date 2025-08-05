@@ -10,9 +10,9 @@
     <RootNamespace>TeamsAccountManager</RootNamespace>
     <Company>Teams Account Manager Development Team</Company>
     <Product>Teams Account Manager</Product>
-    <Version>0.9.1</Version>
-    <FileVersion>0.9.1.0</FileVersion>
-    <AssemblyVersion>0.9.1.0</AssemblyVersion>
+    <Version>0.9.2</Version>
+    <FileVersion>0.9.2.0</FileVersion>
+    <AssemblyVersion>0.9.2.0</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>

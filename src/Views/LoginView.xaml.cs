@@ -70,11 +70,8 @@ namespace TeamsAccountManager.Views
                     var authService = App.GetService<AuthenticationService>();
                     var userName = authService.CurrentUserName ?? "不明なユーザー";
                     
-                    // 権限情報を簡易的に設定（今は読み書き可能で固定）
-                    var roles = "読み書き可能";
-                    
-                    // ユーザー情報と権限を表示
-                    mainWindow.UserInfoTextBlock.Text = $"{userName} ({roles})";
+                    // ユーザー情報を表示（権限表示は削除）
+                    mainWindow.UserInfoTextBlock.Text = userName;
                     
                     // UserListViewへ遷移
                     var userListView = new UserListView_Simple();

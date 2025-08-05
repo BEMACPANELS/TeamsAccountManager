@@ -112,6 +112,10 @@ namespace TeamsAccountManager.Models
         /// </summary>
         public string? UserType { get; set; }
 
+        /// <summary>
+        /// 割り当てられたライセンス
+        /// </summary>
+        public List<string>? AssignedLicenses { get; set; }
 
         // アプリケーション用プロパティ
 
@@ -191,6 +195,11 @@ namespace TeamsAccountManager.Models
                               UserPrincipalName?.Contains("#EXT#", StringComparison.OrdinalIgnoreCase) ?? false;
 
         /// <summary>
+        /// ライセンスが割り当てられているかどうか
+        /// </summary>
+        public bool HasLicense => AssignedLicenses != null && AssignedLicenses.Count > 0;
+
+        /// <summary>
         /// コンストラクタ
         /// </summary>
         public User()
@@ -222,7 +231,8 @@ namespace TeamsAccountManager.Models
                 PostalCode = graphUser.PostalCode,
                 State = graphUser.State,
                 UsageLocation = graphUser.UsageLocation,
-                AccountEnabled = graphUser.AccountEnabled
+                AccountEnabled = graphUser.AccountEnabled,
+                AssignedLicenses = graphUser.AssignedLicenses?.Select(l => l.SkuId?.ToString() ?? "Unknown").ToList()
             };
         }
 

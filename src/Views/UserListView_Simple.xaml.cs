@@ -24,6 +24,16 @@ namespace TeamsAccountManager.Views
         private ICollectionView usersView;
         private Dictionary<string, string> columnFilters = new Dictionary<string, string>();
         
+        // 各列のユニークな値を保持
+        private HashSet<string> uniqueDomains = new HashSet<string>();
+        private HashSet<string> uniqueDepartments = new HashSet<string>();
+        private HashSet<string> uniqueJobTitles = new HashSet<string>();
+        private HashSet<string> uniqueCountries = new HashSet<string>();
+        private HashSet<string> uniqueOffices = new HashSet<string>();
+        private HashSet<string> uniqueUsageLocations = new HashSet<string>();
+        
+        private bool _isInitializing = true;
+        
         public UserListView_Simple()
         {
             InitializeComponent();
@@ -34,6 +44,9 @@ namespace TeamsAccountManager.Views
             
             // データグリッドにバインド
             UsersDataGrid.ItemsSource = usersView;
+            
+            // 初期化完了
+            _isInitializing = false;
             
             // 初回データ読み込みは削除（手動でダウンロードボタンを押すようにする）
             // _ = LoadRealDataAsync();
@@ -103,6 +116,9 @@ namespace TeamsAccountManager.Views
                 {
                     users.Add(user);
                 }
+                
+                // ユニークな値を収集
+                CollectUniqueValues();
                 
                 logger.LogInformation("LoadRealDataAsync: UIへの反映完了");
                 UpdateStatus();
@@ -547,6 +563,12 @@ namespace TeamsAccountManager.Views
                         else if (filterValue == "false")
                             matches = user.IsGuest == false;
                         break;
+                    case "HasLicense":
+                        if (filterValue == "true")
+                            matches = user.HasLicense == true;
+                        else if (filterValue == "false")
+                            matches = user.HasLicense == false;
+                        break;
                 }
                 
                 if (!matches)
@@ -616,6 +638,154 @@ namespace TeamsAccountManager.Views
             
             usersView.Refresh();
             UpdateStatus();
+        }
+        
+        private void FilterLicenseChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (FilterLicense == null || usersView == null)
+                return;
+            
+            switch (FilterLicense.SelectedIndex)
+            {
+                case 0: // 全て
+                    columnFilters.Remove("HasLicense");
+                    break;
+                case 1: // 有り
+                    columnFilters["HasLicense"] = "true";
+                    break;
+                case 2: // 無し
+                    columnFilters["HasLicense"] = "false";
+                    break;
+            }
+            
+            usersView.Refresh();
+            UpdateStatus();
+        }
+        
+        private void CollectUniqueValues()
+        {
+            // 既存の値をクリア
+            uniqueDomains.Clear();
+            uniqueDepartments.Clear();
+            uniqueJobTitles.Clear();
+            uniqueCountries.Clear();
+            uniqueOffices.Clear();
+            uniqueUsageLocations.Clear();
+            
+            // ユーザーから一意の値を収集
+            foreach (var user in users)
+            {
+                if (!string.IsNullOrWhiteSpace(user.EmailDomain))
+                    uniqueDomains.Add(user.EmailDomain);
+                if (!string.IsNullOrWhiteSpace(user.Department))
+                    uniqueDepartments.Add(user.Department);
+                if (!string.IsNullOrWhiteSpace(user.JobTitle))
+                    uniqueJobTitles.Add(user.JobTitle);
+                if (!string.IsNullOrWhiteSpace(user.Country))
+                    uniqueCountries.Add(user.Country);
+                if (!string.IsNullOrWhiteSpace(user.OfficeLocation))
+                    uniqueOffices.Add(user.OfficeLocation);
+                if (!string.IsNullOrWhiteSpace(user.UsageLocation))
+                    uniqueUsageLocations.Add(user.UsageLocation);
+            }
+            
+            // ComboBoxに候補を設定
+            SetupAutoCompleteForFilters();
+        }
+        
+        private void SetupAutoCompleteForFilters()
+        {
+            // 各ComboBoxに候補を設定
+            Dispatcher.Invoke(() =>
+            {
+                // ドメイン
+                FilterDomain.Items.Clear();
+                FilterDomain.Items.Add(""); // 空の選択肢
+                foreach (var domain in uniqueDomains.OrderBy(d => d))
+                {
+                    FilterDomain.Items.Add(domain);
+                }
+                
+                // 部署
+                FilterDepartment.Items.Clear();
+                FilterDepartment.Items.Add(""); // 空の選択肢
+                foreach (var dept in uniqueDepartments.OrderBy(d => d))
+                {
+                    FilterDepartment.Items.Add(dept);
+                }
+                
+                // 役職
+                FilterJobTitle.Items.Clear();
+                FilterJobTitle.Items.Add(""); // 空の選択肢
+                foreach (var title in uniqueJobTitles.OrderBy(t => t))
+                {
+                    FilterJobTitle.Items.Add(title);
+                }
+                
+                // 国
+                FilterCountry.Items.Clear();
+                FilterCountry.Items.Add(""); // 空の選択肢
+                foreach (var country in uniqueCountries.OrderBy(c => c))
+                {
+                    FilterCountry.Items.Add(country);
+                }
+                
+                // オフィス
+                FilterOffice.Items.Clear();
+                FilterOffice.Items.Add(""); // 空の選択肢
+                foreach (var office in uniqueOffices.OrderBy(o => o))
+                {
+                    FilterOffice.Items.Add(office);
+                }
+                
+                // 使用場所
+                FilterUsage.Items.Clear();
+                FilterUsage.Items.Add(""); // 空の選択肢
+                foreach (var usage in uniqueUsageLocations.OrderBy(u => u))
+                {
+                    FilterUsage.Items.Add(usage);
+                }
+            });
+        }
+        
+        private void FilterComboBoxTextChanged(object sender, TextChangedEventArgs e)
+        {
+            // 初期化中は処理しない
+            if (_isInitializing) return;
+            
+            // TextBoxを取得
+            var textBox = e.OriginalSource as TextBox;
+            if (textBox == null) return;
+            
+            // 親のComboBoxを取得
+            var comboBox = textBox.TemplatedParent as ComboBox;
+            if (comboBox?.Tag is string columnName)
+            {
+                var filterValue = textBox.Text;
+                
+                if (string.IsNullOrWhiteSpace(filterValue))
+                {
+                    columnFilters.Remove(columnName);
+                }
+                else
+                {
+                    columnFilters[columnName] = filterValue;
+                }
+                
+                // Dispatcherを使用して、UIスレッドの次のサイクルでRefreshを実行
+                Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    try
+                    {
+                        usersView?.Refresh();
+                        UpdateStatus();
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        // トランザクション中の場合は無視
+                    }
+                }), System.Windows.Threading.DispatcherPriority.Background);
+            }
         }
     }
 }

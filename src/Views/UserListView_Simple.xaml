@@ -167,7 +167,7 @@
                                         <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
                                     <TextBlock Grid.Row="0" Text="ドメイン" Margin="2,2,2,0" FontWeight="Bold"/>
-                                    <TextBox Grid.Row="1" x:Name="FilterDomain" Margin="4,2,4,2" Height="24" TextChanged="FilterTextChanged" Tag="EmailDomain"/>
+                                    <ComboBox Grid.Row="1" x:Name="FilterDomain" Margin="4,2,4,2" Height="24" IsEditable="True" IsTextSearchEnabled="True" TextBoxBase.TextChanged="FilterComboBoxTextChanged" Tag="EmailDomain"/>
                                 </Grid>
                             </DataGridTextColumn.Header>
                         </DataGridTextColumn>
@@ -180,7 +180,7 @@
                                         <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
                                     <TextBlock Grid.Row="0" Text="部署" Margin="2,2,2,0" FontWeight="Bold"/>
-                                    <TextBox Grid.Row="1" x:Name="FilterDepartment" Margin="4,2,4,2" Height="24" TextChanged="FilterTextChanged" Tag="Department"/>
+                                    <ComboBox Grid.Row="1" x:Name="FilterDepartment" Margin="4,2,4,2" Height="24" IsEditable="True" IsTextSearchEnabled="True" TextBoxBase.TextChanged="FilterComboBoxTextChanged" Tag="Department"/>
                                 </Grid>
                             </DataGridTextColumn.Header>
                         </DataGridTextColumn>
@@ -193,7 +193,7 @@
                                         <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
                                     <TextBlock Grid.Row="0" Text="役職" Margin="2,2,2,0" FontWeight="Bold"/>
-                                    <TextBox Grid.Row="1" x:Name="FilterJobTitle" Margin="4,2,4,2" Height="24" TextChanged="FilterTextChanged" Tag="JobTitle"/>
+                                    <ComboBox Grid.Row="1" x:Name="FilterJobTitle" Margin="4,2,4,2" Height="24" IsEditable="True" IsTextSearchEnabled="True" TextBoxBase.TextChanged="FilterComboBoxTextChanged" Tag="JobTitle"/>
                                 </Grid>
                             </DataGridTextColumn.Header>
                         </DataGridTextColumn>
@@ -206,7 +206,7 @@
                                         <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
                                     <TextBlock Grid.Row="0" Text="国/地域" Margin="2,2,2,0" FontWeight="Bold"/>
-                                    <TextBox Grid.Row="1" x:Name="FilterCountry" Margin="4,2,4,2" Height="24" TextChanged="FilterTextChanged" Tag="Country"/>
+                                    <ComboBox Grid.Row="1" x:Name="FilterCountry" Margin="4,2,4,2" Height="24" IsEditable="True" IsTextSearchEnabled="True" TextBoxBase.TextChanged="FilterComboBoxTextChanged" Tag="Country"/>
                                 </Grid>
                             </DataGridTextColumn.Header>
                         </DataGridTextColumn>
@@ -219,7 +219,7 @@
                                         <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
                                     <TextBlock Grid.Row="0" Text="オフィス" Margin="2,2,2,0" FontWeight="Bold"/>
-                                    <TextBox Grid.Row="1" x:Name="FilterOffice" Margin="4,2,4,2" Height="24" TextChanged="FilterTextChanged" Tag="OfficeLocation"/>
+                                    <ComboBox Grid.Row="1" x:Name="FilterOffice" Margin="4,2,4,2" Height="24" IsEditable="True" IsTextSearchEnabled="True" TextBoxBase.TextChanged="FilterComboBoxTextChanged" Tag="OfficeLocation"/>
                                 </Grid>
                             </DataGridTextColumn.Header>
                         </DataGridTextColumn>
@@ -232,7 +232,7 @@
                                         <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
                                     <TextBlock Grid.Row="0" Text="使用場所" Margin="2,2,2,0" FontWeight="Bold"/>
-                                    <TextBox Grid.Row="1" x:Name="FilterUsage" Margin="4,2,4,2" Height="24" TextChanged="FilterTextChanged" Tag="UsageLocation"/>
+                                    <ComboBox Grid.Row="1" x:Name="FilterUsage" Margin="4,2,4,2" Height="24" IsEditable="True" IsTextSearchEnabled="True" TextBoxBase.TextChanged="FilterComboBoxTextChanged" Tag="UsageLocation"/>
                                 </Grid>
                             </DataGridTextColumn.Header>
                         </DataGridTextColumn>
@@ -266,6 +266,23 @@
                                         <ComboBoxItem Content="全て" IsSelected="True"/>
                                         <ComboBoxItem Content="ゲスト"/>
                                         <ComboBoxItem Content="メンバー"/>
+                                    </ComboBox>
+                                </Grid>
+                            </DataGridCheckBoxColumn.Header>
+                        </DataGridCheckBoxColumn>
+                        
+                        <DataGridCheckBoxColumn Binding="{Binding HasLicense, Mode=OneWay}" Width="1*" IsReadOnly="True">
+                            <DataGridCheckBoxColumn.Header>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Grid.Row="0" Text="ライセンス" Margin="2,2,2,0" FontWeight="Bold"/>
+                                    <ComboBox Grid.Row="1" x:Name="FilterLicense" Margin="4,2,4,2" Height="24" SelectionChanged="FilterLicenseChanged">
+                                        <ComboBoxItem Content="全て" IsSelected="True"/>
+                                        <ComboBoxItem Content="有り"/>
+                                        <ComboBoxItem Content="無し"/>
                                     </ComboBox>
                                 </Grid>
                             </DataGridCheckBoxColumn.Header>
