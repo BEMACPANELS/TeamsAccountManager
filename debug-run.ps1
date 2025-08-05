@@ -7,9 +7,14 @@ Write-Host ""
 # 実行ファイルのパス
 $exePath = ".\src\bin\Release\net8.0-windows\TeamsAccountManager.exe"
 $publishPath = ".\publish\TeamsAccountManager.exe"
+$singleFilePath = ".\src\bin\Release\net8.0-windows\win-x64\publish\TeamsAccountManager.exe"
 
 # 実行ファイルの存在確認
-if (Test-Path $publishPath) {
+if (Test-Path $singleFilePath) {
+    $targetPath = $singleFilePath
+    Write-Host "単一ファイル版を実行します: $singleFilePath" -ForegroundColor Yellow
+    Write-Host "ファイルサイズ: $([math]::Round((Get-Item $targetPath).Length / 1MB, 2)) MB" -ForegroundColor Cyan
+} elseif (Test-Path $publishPath) {
     $targetPath = $publishPath
     Write-Host "パブリッシュ版を実行します: $publishPath" -ForegroundColor Yellow
 } elseif (Test-Path $exePath) {

@@ -88,6 +88,9 @@ namespace TeamsAccountManager
             CultureInfo.CurrentCulture = culture;
             CultureInfo.CurrentUICulture = culture;
             
+            // リソースディクショナリを更新
+            UpdateResourceDictionary(selectedCulture);
+            
             // UI要素を更新（簡易版）
             switch (LanguageComboBox.SelectedIndex)
             {
@@ -173,6 +176,25 @@ namespace TeamsAccountManager
         public void NavigateToContent(object content)
         {
             MainContent.Content = content;
+        }
+        
+        private void UpdateResourceDictionary(string culture)
+        {
+            // 既存のリソースディクショナリをクリア
+            Application.Current.Resources.MergedDictionaries.Clear();
+            
+            // 実行ファイルのディレクトリからリソースファイルを読み込み
+            var exeDir = AppContext.BaseDirectory;
+            var resourceFile = System.IO.Path.Combine(exeDir, "Resources", "Languages", $"Resources.{culture}.xaml");
+            
+            if (System.IO.File.Exists(resourceFile))
+            {
+                var resourceDict = new ResourceDictionary
+                {
+                    Source = new Uri(resourceFile, UriKind.Absolute)
+                };
+                Application.Current.Resources.MergedDictionaries.Add(resourceDict);
+            }
         }
     }
 }

@@ -30,12 +30,19 @@
     <system:String x:Key="Users">Users</system:String>
     <system:String x:Key="UserList">User List</system:String>
     <system:String x:Key="DisplayName">Display Name</system:String>
+    <system:String x:Key="GivenName">Given Name</system:String>
+    <system:String x:Key="Surname">Surname</system:String>
     <system:String x:Key="Email">Email</system:String>
+    <system:String x:Key="EmailDomain">Domain</system:String>
     <system:String x:Key="Department">Department</system:String>
     <system:String x:Key="JobTitle">Job Title</system:String>
-    <system:String x:Key="OfficeLocation">Office Location</system:String>
+    <system:String x:Key="Country">Country/Region</system:String>
+    <system:String x:Key="OfficeLocation">Office</system:String>
+    <system:String x:Key="UsageLocation">Usage Location</system:String>
     <system:String x:Key="PhoneNumber">Phone Number</system:String>
-    <system:String x:Key="AccountEnabled">Account Enabled</system:String>
+    <system:String x:Key="AccountEnabled">Enabled</system:String>
+    <system:String x:Key="IsGuest">Guest</system:String>
+    <system:String x:Key="HasLicense">License</system:String>
     <system:String x:Key="LastSignIn">Last Sign In</system:String>
     
     <!-- Search & Filter -->
@@ -59,7 +66,7 @@
     <system:String x:Key="SelectFile">Select File</system:String>
     
     <!-- Bulk Edit -->
-    <system:String x:Key="BulkEdit">Bulk Edit</system:String>
+    <system:String x:Key="BulkEdit">✏️ Bulk Edit</system:String>
     <system:String x:Key="BulkEditTooltip">Bulk edit selected users</system:String>
     <system:String x:Key="SelectedUsers">Selected Users</system:String>
     <system:String x:Key="Apply">Apply</system:String>
@@ -81,7 +88,6 @@
     <system:String x:Key="Action">Action</system:String>
     <system:String x:Key="Revert">Revert</system:String>
     <system:String x:Key="ClearHistory">Clear History</system:String>
-    <system:String x:Key="Close">Close</system:String>
     <system:String x:Key="ExportSuccess">Export completed successfully</system:String>
     <system:String x:Key="ImportSuccess">Import completed successfully</system:String>
     <system:String x:Key="ExportFailed">Export failed</system:String>
@@ -104,12 +110,42 @@
     <system:String x:Key="InactiveUsers">Inactive Users</system:String>
     <system:String x:Key="UsersByDepartment">Users by Department</system:String>
     
+    <!-- Permission Display -->
+    <system:String x:Key="ReadWriteEnabled">Read/Write Enabled</system:String>
+    <system:String x:Key="ReadOnlyEnabled">Read Only</system:String>
+    
     <!-- Error Messages -->
     <system:String x:Key="NetworkError">A network error occurred</system:String>
     <system:String x:Key="AuthenticationError">An authentication error occurred</system:String>
     <system:String x:Key="PermissionError">Insufficient permissions</system:String>
     <system:String x:Key="UnknownError">An unknown error occurred</system:String>
     <system:String x:Key="RetryMessage">Please try again</system:String>
+    
+    <!-- Button Text -->
+    <system:String x:Key="CreateNewUser">👤 Create New User</system:String>
+    <system:String x:Key="DeleteUsers">🗑️ Delete Users</system:String>
+    <system:String x:Key="DownloadFromServer">⬇️ Download from Server</system:String>
+    <system:String x:Key="UploadToServer">⬆️ Upload to Server</system:String>
+    
+    <!-- Create New Users Screen -->
+    <system:String x:Key="AddRow">➕ Add Row</system:String>
+    <system:String x:Key="RemoveSelectedRows">➖ Remove Selected Rows</system:String>
+    <system:String x:Key="GeneratePasswords">🔑 Generate Passwords</system:String>
+    <system:String x:Key="CreateUsersExecute">👤 Execute User Creation</system:String>
+    <system:String x:Key="Password">Password</system:String>
+    <system:String x:Key="ForcePasswordChange">Require Password Change</system:String>
+    
+    <!-- Delete Users Screen -->
+    <system:String x:Key="UserDeletion">User Deletion</system:String>
+    <system:String x:Key="SearchUsers">🔍 Search Users</system:String>
+    <system:String x:Key="SelectAll">☑ Select All</system:String>
+    <system:String x:Key="DeselectAll">☐ Deselect All</system:String>
+    <system:String x:Key="DeleteSelectedUsers">🗑️ Delete Selected Users</system:String>
+    <system:String x:Key="SearchCondition">Search Criteria:</system:String>
+    <system:String x:Key="SearchPlaceholderDelete">Search by display name, email, or department...</system:String>
+    <system:String x:Key="ClearSearch">✕ Clear</system:String>
+    <system:String x:Key="Select">Select</system:String>
+    <system:String x:Key="AccountStatus">Account Status</system:String>
     
     <!-- File Types -->
     <system:String x:Key="ExcelFiles">Excel Files</system:String>

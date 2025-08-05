@@ -54,7 +54,7 @@
                                        Margin="0,0,4,0"
                                        Foreground="White"/>
                             <TextBlock x:Name="PermissionTextBlock" 
-                                       Text="読み書き可能" 
+                                       Text="{DynamicResource ReadWriteEnabled}" 
                                        VerticalAlignment="Center"
                                        Foreground="White"
                                        FontSize="12"/>

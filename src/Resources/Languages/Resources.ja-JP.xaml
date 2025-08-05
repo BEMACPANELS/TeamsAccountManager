@@ -30,12 +30,19 @@
     <system:String x:Key="Users">ユーザー</system:String>
     <system:String x:Key="UserList">ユーザー一覧</system:String>
     <system:String x:Key="DisplayName">表示名</system:String>
+    <system:String x:Key="GivenName">名</system:String>
+    <system:String x:Key="Surname">姓</system:String>
     <system:String x:Key="Email">メールアドレス</system:String>
+    <system:String x:Key="EmailDomain">ドメイン</system:String>
     <system:String x:Key="Department">部署</system:String>
     <system:String x:Key="JobTitle">役職</system:String>
-    <system:String x:Key="OfficeLocation">オフィス所在地</system:String>
+    <system:String x:Key="Country">国/地域</system:String>
+    <system:String x:Key="OfficeLocation">オフィス</system:String>
+    <system:String x:Key="UsageLocation">使用場所</system:String>
     <system:String x:Key="PhoneNumber">電話番号</system:String>
-    <system:String x:Key="AccountEnabled">アカウント有効</system:String>
+    <system:String x:Key="AccountEnabled">有効</system:String>
+    <system:String x:Key="IsGuest">ゲスト</system:String>
+    <system:String x:Key="HasLicense">ライセンス</system:String>
     <system:String x:Key="LastSignIn">最終ログイン</system:String>
     
     <!-- 検索・フィルター -->
@@ -59,7 +66,7 @@
     <system:String x:Key="SelectFile">ファイルを選択</system:String>
     
     <!-- 一括編集 -->
-    <system:String x:Key="BulkEdit">一括編集</system:String>
+    <system:String x:Key="BulkEdit">✏️ 一括編集</system:String>
     <system:String x:Key="BulkEditTooltip">選択したユーザーを一括編集</system:String>
     <system:String x:Key="SelectedUsers">選択したユーザー</system:String>
     <system:String x:Key="Apply">適用</system:String>
@@ -81,7 +88,6 @@
     <system:String x:Key="Action">アクション</system:String>
     <system:String x:Key="Revert">元に戻す</system:String>
     <system:String x:Key="ClearHistory">履歴をクリア</system:String>
-    <system:String x:Key="Close">閉じる</system:String>
     <system:String x:Key="ExportSuccess">エクスポートが完了しました</system:String>
     <system:String x:Key="ImportSuccess">インポートが完了しました</system:String>
     <system:String x:Key="ExportFailed">エクスポートに失敗しました</system:String>
@@ -104,12 +110,42 @@
     <system:String x:Key="InactiveUsers">無効ユーザー数</system:String>
     <system:String x:Key="UsersByDepartment">部署別ユーザー数</system:String>
     
+    <!-- 権限表示 -->
+    <system:String x:Key="ReadWriteEnabled">読み書き可能</system:String>
+    <system:String x:Key="ReadOnlyEnabled">読み取り専用</system:String>
+    
     <!-- エラーメッセージ -->
     <system:String x:Key="NetworkError">ネットワークエラーが発生しました</system:String>
     <system:String x:Key="AuthenticationError">認証エラーが発生しました</system:String>
     <system:String x:Key="PermissionError">権限がありません</system:String>
     <system:String x:Key="UnknownError">不明なエラーが発生しました</system:String>
     <system:String x:Key="RetryMessage">もう一度お試しください</system:String>
+    
+    <!-- ボタンテキスト -->
+    <system:String x:Key="CreateNewUser">👤 新規ユーザー作成</system:String>
+    <system:String x:Key="DeleteUsers">🗑️ ユーザー削除</system:String>
+    <system:String x:Key="DownloadFromServer">⬇️ サーバーからダウンロード</system:String>
+    <system:String x:Key="UploadToServer">⬆️ サーバーへアップロード</system:String>
+    
+    <!-- 新規作成画面 -->
+    <system:String x:Key="AddRow">➕ 行を追加</system:String>
+    <system:String x:Key="RemoveSelectedRows">➖ 選択行を削除</system:String>
+    <system:String x:Key="GeneratePasswords">🔑 パスワード一括生成</system:String>
+    <system:String x:Key="CreateUsersExecute">👤 ユーザー作成実行</system:String>
+    <system:String x:Key="Password">パスワード</system:String>
+    <system:String x:Key="ForcePasswordChange">パスワード変更要求</system:String>
+    
+    <!-- 削除画面 -->
+    <system:String x:Key="UserDeletion">ユーザー削除</system:String>
+    <system:String x:Key="SearchUsers">🔍 ユーザー検索</system:String>
+    <system:String x:Key="SelectAll">☑ 全選択</system:String>
+    <system:String x:Key="DeselectAll">☐ 全解除</system:String>
+    <system:String x:Key="DeleteSelectedUsers">🗑️ 選択したユーザーを削除</system:String>
+    <system:String x:Key="SearchCondition">検索条件：</system:String>
+    <system:String x:Key="SearchPlaceholderDelete">表示名、メールアドレス、部署で検索...</system:String>
+    <system:String x:Key="ClearSearch">✕ クリア</system:String>
+    <system:String x:Key="Select">選択</system:String>
+    <system:String x:Key="AccountStatus">アカウント状態</system:String>
     
     <!-- ファイル形式 -->
     <system:String x:Key="ExcelFiles">Excel ファイル</system:String>

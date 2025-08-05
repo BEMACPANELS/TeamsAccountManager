@@ -1,0 +1,218 @@
+<UserControl x:Class="TeamsAccountManager.Views.DeleteUsersView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="1000">
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <!-- ヘッダー -->
+        <Border Grid.Row="0" Background="White" BorderBrush="#E0E0E0" BorderThickness="1" 
+                Padding="16" Margin="16,16,16,8" CornerRadius="4">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <TextBlock Grid.Column="0" Text="{DynamicResource UserDeletion}" FontSize="20" FontWeight="Bold" VerticalAlignment="Center"/>
+                
+                <StackPanel Grid.Column="2" Orientation="Horizontal">
+                    <Button x:Name="SearchButton" Content="{DynamicResource SearchUsers}" Click="SearchButton_Click" 
+                            Height="32" Padding="16,0" Margin="0,0,8,0"/>
+                    <Button x:Name="SelectAllButton" Content="{DynamicResource SelectAll}" Click="SelectAllButton_Click" 
+                            Height="32" Padding="16,0" Margin="0,0,8,0" IsEnabled="False"/>
+                    <Button x:Name="DeselectAllButton" Content="{DynamicResource DeselectAll}" Click="DeselectAllButton_Click" 
+                            Height="32" Padding="16,0" Margin="0,0,8,0" IsEnabled="False"/>
+                    <Button x:Name="DeleteButton" Content="{DynamicResource DeleteSelectedUsers}" Click="DeleteButton_Click" 
+                            Height="32" Padding="16,0" Background="#F44336" Foreground="White" IsEnabled="False"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+        
+        <!-- 検索バー -->
+        <Border Grid.Row="1" Background="White" BorderBrush="#E0E0E0" BorderThickness="1"
+                Padding="16" Margin="16,8,16,8" CornerRadius="4">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <TextBlock Grid.Column="0" Text="{DynamicResource SearchCondition}" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                <TextBox x:Name="SearchTextBox" Grid.Column="1" 
+                         Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                         VerticalAlignment="Center"
+                         Height="32"
+                         Padding="8,0"
+                         KeyDown="SearchTextBox_KeyDown">
+                    <TextBox.Style>
+                        <Style TargetType="TextBox">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="TextBox">
+                                        <Border Background="{TemplateBinding Background}"
+                                                BorderBrush="{TemplateBinding BorderBrush}"
+                                                BorderThickness="{TemplateBinding BorderThickness}"
+                                                CornerRadius="2">
+                                            <Grid>
+                                                <ScrollViewer x:Name="PART_ContentHost" 
+                                                              VerticalAlignment="Center"
+                                                              Margin="8,0,8,0"/>
+                                                <TextBlock Text="表示名、メールアドレス、部署で検索..." 
+                                                          Foreground="Gray"
+                                                          VerticalAlignment="Center"
+                                                          Margin="8,0,8,0"
+                                                          IsHitTestVisible="False">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Text, RelativeSource={RelativeSource TemplatedParent}}" Value="">
+                                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                            </Grid>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </TextBox.Style>
+                </TextBox>
+                <Button x:Name="ClearSearchButton" Grid.Column="2" Content="{DynamicResource ClearSearch}" 
+                        Click="ClearSearchButton_Click"
+                        Margin="8,0,0,0"
+                        Padding="8,0"
+                        Height="32"/>
+            </Grid>
+        </Border>
+
+        <!-- ユーザーリスト -->
+        <Border Grid.Row="2" Background="White" BorderBrush="#E0E0E0" BorderThickness="1"
+                Margin="16,8,16,8" CornerRadius="4" ClipToBounds="True">
+            <Grid>
+                <DataGrid x:Name="UsersDataGrid"
+                          AutoGenerateColumns="False"
+                          CanUserAddRows="False"
+                          CanUserDeleteRows="False"
+                          GridLinesVisibility="Horizontal"
+                          HeadersVisibility="Column"
+                          SelectionMode="Extended"
+                          SelectionUnit="FullRow"
+                          Margin="1,1,10,1"
+                          ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                          ScrollViewer.VerticalScrollBarVisibility="Auto"
+                          AlternatingRowBackground="#F8F8F8"
+                          RowBackground="White"
+                          CellEditEnding="DataGrid_CellEditEnding">
+                    
+                    <DataGrid.ColumnHeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="Height" Value="40"/>
+                            <Setter Property="Background" Value="#F5F5F5"/>
+                            <Setter Property="BorderBrush" Value="#E0E0E0"/>
+                            <Setter Property="BorderThickness" Value="0,0,1,1"/>
+                            <Setter Property="Padding" Value="8,4"/>
+                            <Setter Property="FontWeight" Value="Bold"/>
+                        </Style>
+                    </DataGrid.ColumnHeaderStyle>
+                    
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn Header="{DynamicResource Select}" Width="60">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <CheckBox IsChecked="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}" 
+                                             HorizontalAlignment="Center" 
+                                             VerticalAlignment="Center"
+                                             Click="CheckBox_Click"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Header="{DynamicResource DisplayName}" Binding="{Binding DisplayName}" Width="2*" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="{DynamicResource Email}" Binding="{Binding Email}" Width="2.5*" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="{DynamicResource Department}" Binding="{Binding Department}" Width="1.5*" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="{DynamicResource JobTitle}" Binding="{Binding JobTitle}" Width="1.5*" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="{DynamicResource Country}" Binding="{Binding Country}" Width="1*" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="{DynamicResource AccountStatus}" Width="1*" IsReadOnly="True">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding AccountEnabled}" Value="True">
+                                            <Setter Property="Text" Value="有効"/>
+                                            <Setter Property="Foreground" Value="Green"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding AccountEnabled}" Value="False">
+                                            <Setter Property="Text" Value="無効"/>
+                                            <Setter Property="Foreground" Value="Red"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="{DynamicResource LastSignIn}" Binding="{Binding LastSignIn, StringFormat='{}{0:yyyy/MM/dd}'}" Width="1*" IsReadOnly="True"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+                
+                <!-- 検索中表示 -->
+                <Border x:Name="SearchingOverlay" 
+                        Background="#80FFFFFF" 
+                        Visibility="Collapsed">
+                    <StackPanel HorizontalAlignment="Center" 
+                                VerticalAlignment="Center">
+                        <ProgressBar IsIndeterminate="True" 
+                                     Width="200" 
+                                     Height="4"/>
+                        <TextBlock Text="ユーザーを検索中..." 
+                                   Margin="0,10,0,0" 
+                                   FontSize="14"
+                                   HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+                
+                <!-- ローディング表示 -->
+                <Border x:Name="LoadingOverlay" 
+                        Background="#80000000" 
+                        Visibility="Collapsed">
+                    <StackPanel HorizontalAlignment="Center" 
+                                VerticalAlignment="Center">
+                        <ProgressBar IsIndeterminate="True" 
+                                     Width="200" 
+                                     Height="4"/>
+                        <TextBlock x:Name="LoadingText"
+                                   Text="処理中..." 
+                                   Foreground="White"
+                                   Margin="0,10,0,0" 
+                                   FontSize="14"
+                                   HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Border>
+        
+        <!-- ステータスバー -->
+        <Border Grid.Row="3" Background="#F5F5F5" BorderBrush="#E0E0E0" BorderThickness="0,1,0,0" Padding="16,8">
+            <Grid>
+                <TextBlock x:Name="StatusTextBlock" Text="ユーザーを検索してください" VerticalAlignment="Center"/>
+                <TextBlock x:Name="SelectionStatusTextBlock" Text="" 
+                          HorizontalAlignment="Right" 
+                          VerticalAlignment="Center"
+                          FontWeight="Bold"
+                          Foreground="#D32F2F"/>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

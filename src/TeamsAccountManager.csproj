@@ -10,9 +10,9 @@
     <RootNamespace>TeamsAccountManager</RootNamespace>
     <Company>Teams Account Manager Development Team</Company>
     <Product>Teams Account Manager</Product>
-    <Version>0.9.3</Version>
-    <FileVersion>0.9.3.0</FileVersion>
-    <AssemblyVersion>0.9.3.0</AssemblyVersion>
+    <Version>0.9.5</Version>
+    <FileVersion>0.9.5.0</FileVersion>
+    <AssemblyVersion>0.9.5.0</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -54,16 +54,22 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- リソースファイル -->
-    <Page Update="Resources\Languages\Resources.ja-JP.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Resources\Languages\Resources.vi-VN.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Resources\Languages\Resources.en-US.xaml">
-      <SubType>Designer</SubType>
-    </Page>
+    <!-- リソースファイルを外部フォルダにコピー -->
+    <Content Include="Resources\Languages\Resources.ja-JP.xaml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Resources\Languages\Resources.vi-VN.xaml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Resources\Languages\Resources.en-US.xaml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

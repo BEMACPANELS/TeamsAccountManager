@@ -11,6 +11,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using TeamsAccountManager.Models;
+using TeamsAccountManager.Views;
 using Microsoft.Graph.Models.ODataErrors;
 
 namespace TeamsAccountManager.Services
@@ -425,6 +426,83 @@ namespace TeamsAccountManager.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"ユーザー検索中にエラーが発生 (検索語: {searchTerm})");
+                throw;
+            }
+        }
+        
+        /// <summary>
+        /// 新規ユーザーを作成
+        /// </summary>
+        public async Task<bool> CreateUserAsync(NewUserModel newUser)
+        {
+            try
+            {
+                InitializeGraphClient();
+                if (_graphClient == null)
+                {
+                    throw new InvalidOperationException("認証されていません");
+                }
+                
+                var graphUser = new Microsoft.Graph.Models.User
+                {
+                    DisplayName = newUser.DisplayName,
+                    UserPrincipalName = newUser.UserPrincipalName,
+                    MailNickname = newUser.UserPrincipalName.Split('@')[0],
+                    AccountEnabled = true,
+                    PasswordProfile = new Microsoft.Graph.Models.PasswordProfile
+                    {
+                        Password = newUser.Password,
+                        ForceChangePasswordNextSignIn = newUser.ForceChangePassword
+                    }
+                };
+                
+                // 空文字列でないプロパティのみ設定
+                if (!string.IsNullOrWhiteSpace(newUser.GivenName))
+                    graphUser.GivenName = newUser.GivenName;
+                if (!string.IsNullOrWhiteSpace(newUser.Surname))
+                    graphUser.Surname = newUser.Surname;
+                if (!string.IsNullOrWhiteSpace(newUser.Department))
+                    graphUser.Department = newUser.Department;
+                if (!string.IsNullOrWhiteSpace(newUser.JobTitle))
+                    graphUser.JobTitle = newUser.JobTitle;
+                if (!string.IsNullOrWhiteSpace(newUser.Country))
+                    graphUser.Country = newUser.Country;
+                if (!string.IsNullOrWhiteSpace(newUser.UsageLocation))
+                    graphUser.UsageLocation = newUser.UsageLocation;
+                
+                await _graphClient.Users.PostAsync(graphUser);
+                
+                _logger.LogInformation($"ユーザー作成成功: {newUser.DisplayName} ({newUser.UserPrincipalName})");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"ユーザー {newUser.DisplayName} の作成中にエラーが発生");
+                throw;
+            }
+        }
+        
+        /// <summary>
+        /// ユーザーを削除
+        /// </summary>
+        public async Task<bool> DeleteUserAsync(string userId)
+        {
+            try
+            {
+                InitializeGraphClient();
+                if (_graphClient == null)
+                {
+                    throw new InvalidOperationException("認証されていません");
+                }
+                
+                await _graphClient.Users[userId].DeleteAsync();
+                
+                _logger.LogInformation($"ユーザー削除成功: {userId}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"ユーザー {userId} の削除中にエラーが発生");
                 throw;
             }
         }

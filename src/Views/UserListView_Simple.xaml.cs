@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Media;
 using Microsoft.Extensions.Logging;
 using TeamsAccountManager.Models;
 using TeamsAccountManager.Services;
@@ -817,15 +818,44 @@ namespace TeamsAccountManager.Views
             // Ctrl+V でペースト
             if (e.Key == Key.V && (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
             {
+                // 現在フォーカスされている要素を取得
+                var focusedElement = Keyboard.FocusedElement;
+                
+                // TextBoxにフォーカスがある場合は通常のペーストを許可
+                if (focusedElement is TextBox)
+                {
+                    // 通常のペースト動作を許可（e.Handled = false）
+                    return;
+                }
+                
+                // 編集モードでない場合はセル全体へのペースト
                 PasteFromClipboard();
                 e.Handled = true;
             }
+        }
+        
+        private T? FindVisualChild<T>(DependencyObject parent) where T : DependencyObject
+        {
+            if (parent == null) return null;
+            
+            T? child = default(T);
+            int numVisuals = VisualTreeHelper.GetChildrenCount(parent);
+            
+            for (int i = 0; i < numVisuals; i++)
+            {
+                var visual = VisualTreeHelper.GetChild(parent, i);
+                child = visual as T ?? FindVisualChild<T>(visual);
+                if (child != null) break;
+            }
+            
+            return child;
         }
         
         private void PasteFromClipboard()
         {
             try
             {
+                
                 // クリップボードからテキストを取得
                 if (!Clipboard.ContainsText())
                 {
@@ -913,16 +943,58 @@ namespace TeamsAccountManager.Views
                     }
                 }
                 
-                // UI更新
-                UsersDataGrid.Items.Refresh();
-                UpdateStatus();
-                SaveButton.IsEnabled = changedUsers.Count > 0;
+                // UI更新（Dispatcherを使用して安全に更新）
+                Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    try
+                    {
+                        UsersDataGrid.Items.Refresh();
+                        UpdateStatus();
+                        SaveButton.IsEnabled = changedUsers.Count > 0;
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        // トランザクション中の場合は無視
+                    }
+                }), System.Windows.Threading.DispatcherPriority.Background);
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"ペースト中にエラーが発生しました:\n{ex.Message}", "エラー", 
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+        
+        private void CreateNewButton_Click(object sender, RoutedEventArgs e)
+        {
+            // 新規ユーザー作成画面を別ウィンドウで開く
+            var createWindow = new Window
+            {
+                Title = "新規ユーザー作成",
+                Width = 1200,
+                Height = 600,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Owner = Window.GetWindow(this)
+            };
+            
+            createWindow.Content = new CreateUsersView();
+            createWindow.ShowDialog();
+        }
+        
+        private void DeleteUsersButton_Click(object sender, RoutedEventArgs e)
+        {
+            // ユーザー削除画面を別ウィンドウで開く
+            var deleteWindow = new Window
+            {
+                Title = "ユーザー削除",
+                Width = 1200,
+                Height = 700,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Owner = Window.GetWindow(this)
+            };
+            
+            deleteWindow.Content = new DeleteUsersView();
+            deleteWindow.ShowDialog();
         }
     }
 }

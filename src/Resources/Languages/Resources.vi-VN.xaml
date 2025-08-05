@@ -30,12 +30,19 @@
     <system:String x:Key="Users">Người dùng</system:String>
     <system:String x:Key="UserList">Danh sách người dùng</system:String>
     <system:String x:Key="DisplayName">Tên hiển thị</system:String>
+    <system:String x:Key="GivenName">Tên</system:String>
+    <system:String x:Key="Surname">Họ</system:String>
     <system:String x:Key="Email">Email</system:String>
+    <system:String x:Key="EmailDomain">Tên miền</system:String>
     <system:String x:Key="Department">Phòng ban</system:String>
     <system:String x:Key="JobTitle">Chức vụ</system:String>
-    <system:String x:Key="OfficeLocation">Vị trí văn phòng</system:String>
+    <system:String x:Key="Country">Quốc gia/Khu vực</system:String>
+    <system:String x:Key="OfficeLocation">Văn phòng</system:String>
+    <system:String x:Key="UsageLocation">Vị trí sử dụng</system:String>
     <system:String x:Key="PhoneNumber">Số điện thoại</system:String>
-    <system:String x:Key="AccountEnabled">Tài khoản hoạt động</system:String>
+    <system:String x:Key="AccountEnabled">Kích hoạt</system:String>
+    <system:String x:Key="IsGuest">Khách</system:String>
+    <system:String x:Key="HasLicense">Giấy phép</system:String>
     <system:String x:Key="LastSignIn">Lần đăng nhập cuối</system:String>
     
     <!-- Tìm kiếm & Lọc -->
@@ -59,7 +66,7 @@
     <system:String x:Key="SelectFile">Chọn tệp</system:String>
     
     <!-- Chỉnh sửa hàng loạt -->
-    <system:String x:Key="BulkEdit">Chỉnh sửa hàng loạt</system:String>
+    <system:String x:Key="BulkEdit">✏️ Chỉnh sửa hàng loạt</system:String>
     <system:String x:Key="BulkEditTooltip">Chỉnh sửa hàng loạt người dùng đã chọn</system:String>
     <system:String x:Key="SelectedUsers">Người dùng đã chọn</system:String>
     <system:String x:Key="Apply">Áp dụng</system:String>
@@ -81,7 +88,6 @@
     <system:String x:Key="Action">Hành động</system:String>
     <system:String x:Key="Revert">Hoàn tác</system:String>
     <system:String x:Key="ClearHistory">Xóa lịch sử</system:String>
-    <system:String x:Key="Close">Đóng</system:String>
     <system:String x:Key="ExportSuccess">Xuất dữ liệu thành công</system:String>
     <system:String x:Key="ImportSuccess">Nhập dữ liệu thành công</system:String>
     <system:String x:Key="ExportFailed">Xuất dữ liệu thất bại</system:String>
@@ -104,12 +110,42 @@
     <system:String x:Key="InactiveUsers">Người dùng không hoạt động</system:String>
     <system:String x:Key="UsersByDepartment">Người dùng theo phòng ban</system:String>
     
+    <!-- Hiển thị quyền -->
+    <system:String x:Key="ReadWriteEnabled">Đọc/Ghi được</system:String>
+    <system:String x:Key="ReadOnlyEnabled">Chỉ đọc</system:String>
+    
     <!-- Thông báo lỗi -->
     <system:String x:Key="NetworkError">Đã xảy ra lỗi mạng</system:String>
     <system:String x:Key="AuthenticationError">Đã xảy ra lỗi xác thực</system:String>
     <system:String x:Key="PermissionError">Không đủ quyền</system:String>
     <system:String x:Key="UnknownError">Đã xảy ra lỗi không xác định</system:String>
     <system:String x:Key="RetryMessage">Vui lòng thử lại</system:String>
+    
+    <!-- Văn bản nút -->
+    <system:String x:Key="CreateNewUser">👤 Tạo người dùng mới</system:String>
+    <system:String x:Key="DeleteUsers">🗑️ Xóa người dùng</system:String>
+    <system:String x:Key="DownloadFromServer">⬇️ Tải xuống từ máy chủ</system:String>
+    <system:String x:Key="UploadToServer">⬆️ Tải lên máy chủ</system:String>
+    
+    <!-- Màn hình tạo người dùng mới -->
+    <system:String x:Key="AddRow">➕ Thêm hàng</system:String>
+    <system:String x:Key="RemoveSelectedRows">➖ Xóa hàng đã chọn</system:String>
+    <system:String x:Key="GeneratePasswords">🔑 Tạo mật khẩu hàng loạt</system:String>
+    <system:String x:Key="CreateUsersExecute">👤 Thực hiện tạo người dùng</system:String>
+    <system:String x:Key="Password">Mật khẩu</system:String>
+    <system:String x:Key="ForcePasswordChange">Yêu cầu đổi mật khẩu</system:String>
+    
+    <!-- Màn hình xóa người dùng -->
+    <system:String x:Key="UserDeletion">Xóa người dùng</system:String>
+    <system:String x:Key="SearchUsers">🔍 Tìm kiếm người dùng</system:String>
+    <system:String x:Key="SelectAll">☑ Chọn tất cả</system:String>
+    <system:String x:Key="DeselectAll">☐ Bỏ chọn tất cả</system:String>
+    <system:String x:Key="DeleteSelectedUsers">🗑️ Xóa người dùng đã chọn</system:String>
+    <system:String x:Key="SearchCondition">Điều kiện tìm kiếm:</system:String>
+    <system:String x:Key="SearchPlaceholderDelete">Tìm theo tên hiển thị, email hoặc phòng ban...</system:String>
+    <system:String x:Key="ClearSearch">✕ Xóa</system:String>
+    <system:String x:Key="Select">Chọn</system:String>
+    <system:String x:Key="AccountStatus">Trạng thái tài khoản</system:String>
     
     <!-- Loại tệp -->
     <system:String x:Key="ExcelFiles">Tệp Excel</system:String>

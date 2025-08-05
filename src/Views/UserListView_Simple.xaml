@@ -16,67 +16,76 @@
         <!-- ツールバー -->
         <Border Grid.Row="0" Background="White" BorderBrush="#E0E0E0" BorderThickness="1" 
                 Padding="16" Margin="16,16,16,8" CornerRadius="4">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Horizontal">
+                <!-- 検索ボックス -->
+                <TextBox x:Name="SearchTextBox"
+                         Width="200"
+                         Height="32"
+                         Margin="0,0,8,0"
+                         VerticalContentAlignment="Center"
+                         TextChanged="SearchTextBox_TextChanged"/>
                 
-                <!-- 検索・フィルター -->
-                <StackPanel Grid.Column="0" Orientation="Horizontal">
-                    <!-- 検索ボックス -->
-                    <TextBox x:Name="SearchTextBox"
-                             Width="300"
-                             Height="32"
-                             Margin="0,0,16,0"
-                             VerticalContentAlignment="Center"
-                             TextChanged="SearchTextBox_TextChanged"/>
-                    
-                    <!-- リフレッシュボタン -->
-                    <Button x:Name="RefreshButton"
-                            Content="⬇️ Download from Server"
-                            Click="RefreshButton_Click"
-                            Height="32"
-                            Padding="16,0"
-                            Margin="0,0,16,0"/>
-                            
-                    <!-- 保存ボタン -->
-                    <Button x:Name="SaveButton"
-                            Content="⬆️ Upload to Server"
-                            Click="SaveButton_Click"
-                            Height="32"
-                            Padding="16,0"
-                            Margin="0,0,16,0"
-                            IsEnabled="False"/>
-                            
-                    <!-- 一括編集ボタン -->
-                    <Button x:Name="BulkEditButton"
-                            Content="✏️ 一括編集"
-                            Click="BulkEditButton_Click"
-                            Height="32"
-                            Padding="16,0"
-                            Margin="0,0,16,0"
-                            IsEnabled="False"/>
-                </StackPanel>
+                <!-- リフレッシュボタン -->
+                <Button x:Name="RefreshButton"
+                        Content="{DynamicResource DownloadFromServer}"
+                        Click="RefreshButton_Click"
+                        Height="32"
+                        Padding="10,0"
+                        Margin="0,0,8,0"/>
+                        
+                <!-- 保存ボタン -->
+                <Button x:Name="SaveButton"
+                        Content="{DynamicResource UploadToServer}"
+                        Click="SaveButton_Click"
+                        Height="32"
+                        Padding="10,0"
+                        Margin="0,0,8,0"
+                        IsEnabled="False"/>
+                        
+                <!-- 一括編集ボタン -->
+                <Button x:Name="BulkEditButton"
+                        Content="{DynamicResource BulkEdit}"
+                        Click="BulkEditButton_Click"
+                        Height="32"
+                        Padding="10,0"
+                        Margin="0,0,8,0"
+                        IsEnabled="False"/>
+                        
+                <!-- エクスポートボタン -->
+                <Button x:Name="ExportButton"
+                        Content="📥 エクスポート"
+                        Click="ExportButton_Click"
+                        Height="32"
+                        Padding="10,0"
+                        Margin="0,0,8,0"/>
                 
-                <!-- アクションボタン -->
-                <StackPanel Grid.Column="1" Orientation="Horizontal">
-                    <!-- エクスポートボタン -->
-                    <Button x:Name="ExportButton"
-                            Content="📥 エクスポート"
-                            Click="ExportButton_Click"
-                            Height="32"
-                            Padding="16,0"
-                            Margin="0,0,8,0"/>
-                    
-                    <!-- インポートボタン -->
-                    <Button x:Name="ImportButton"
-                            Content="📤 インポート"
-                            Click="ImportButton_Click"
-                            Height="32"
-                            Padding="16,0"/>
-                </StackPanel>
-            </Grid>
+                <!-- インポートボタン -->
+                <Button x:Name="ImportButton"
+                        Content="📤 インポート"
+                        Click="ImportButton_Click"
+                        Height="32"
+                        Padding="10,0"
+                        Margin="0,0,8,0"/>
+                        
+                <!-- 新規作成ボタン -->
+                <Button x:Name="CreateNewButton"
+                        Content="{DynamicResource CreateNewUser}"
+                        Click="CreateNewButton_Click"
+                        Height="32"
+                        Padding="10,0"
+                        Margin="0,0,8,0"
+                        Background="#2196F3"
+                        Foreground="White"/>
+                        
+                <!-- 削除ボタン -->
+                <Button x:Name="DeleteUsersButton"
+                        Content="{DynamicResource DeleteUsers}"
+                        Click="DeleteUsersButton_Click"
+                        Height="32"
+                        Padding="10,0"
+                        Background="#F44336"
+                        Foreground="White"/>
+            </StackPanel>
         </Border>
 
         <!-- データグリッド -->
@@ -96,7 +105,9 @@
                           PreviewKeyDown="DataGrid_PreviewKeyDown"
                           Margin="1,1,10,1"
                           ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                          ScrollViewer.VerticalScrollBarVisibility="Auto">
+                          ScrollViewer.VerticalScrollBarVisibility="Auto"
+                          AlternatingRowBackground="#F8F8F8"
+                          RowBackground="White">
                     <DataGrid.ColumnHeaderStyle>
                         <Style TargetType="DataGridColumnHeader">
                             <Setter Property="Height" Value="60"/>
@@ -108,6 +119,21 @@
                         </Style>
                     </DataGrid.ColumnHeaderStyle>
                     
+                    <DataGrid.RowStyle>
+                        <Style TargetType="DataGridRow">
+                            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                            <Setter Property="BorderBrush" Value="#F0F0F0"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#E8F4FD"/>
+                                </Trigger>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="Background" Value="#D1E7F5"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGrid.RowStyle>
+                    
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding DisplayName}" Width="2*">
                             <DataGridTextColumn.Header>
@@ -116,7 +142,7 @@
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
-                                    <TextBlock Grid.Row="0" Text="表示名" Margin="2,2,2,0" FontWeight="Bold"/>
+                                    <TextBlock Grid.Row="0" Text="{DynamicResource DisplayName}" Margin="2,2,2,0" FontWeight="Bold"/>
                                     <TextBox Grid.Row="1" x:Name="FilterDisplayName" Margin="4,2,4,2" Height="24" TextChanged="FilterTextChanged" Tag="DisplayName"/>
                                 </Grid>
                             </DataGridTextColumn.Header>
@@ -129,7 +155,7 @@
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
-                                    <TextBlock Grid.Row="0" Text="名" Margin="2,2,2,0" FontWeight="Bold"/>
+                                    <TextBlock Grid.Row="0" Text="{DynamicResource GivenName}" Margin="2,2,2,0" FontWeight="Bold"/>
                                     <TextBox Grid.Row="1" x:Name="FilterGivenName" Margin="4,2,4,2" Height="24" TextChanged="FilterTextChanged" Tag="GivenName"/>
                                 </Grid>
                             </DataGridTextColumn.Header>
@@ -142,7 +168,7 @@
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
-                                    <TextBlock Grid.Row="0" Text="姓" Margin="2,2,2,0" FontWeight="Bold"/>
+                                    <TextBlock Grid.Row="0" Text="{DynamicResource Surname}" Margin="2,2,2,0" FontWeight="Bold"/>
                                     <TextBox Grid.Row="1" x:Name="FilterSurname" Margin="4,2,4,2" Height="24" TextChanged="FilterTextChanged" Tag="Surname"/>
                                 </Grid>
                             </DataGridTextColumn.Header>
@@ -155,7 +181,7 @@
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
-                                    <TextBlock Grid.Row="0" Text="メールアドレス" Margin="2,2,2,0" FontWeight="Bold"/>
+                                    <TextBlock Grid.Row="0" Text="{DynamicResource Email}" Margin="2,2,2,0" FontWeight="Bold"/>
                                     <TextBox Grid.Row="1" x:Name="FilterEmail" Margin="4,2,4,2" Height="24" TextChanged="FilterTextChanged" Tag="Email"/>
                                 </Grid>
                             </DataGridTextColumn.Header>
@@ -168,7 +194,7 @@
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
-                                    <TextBlock Grid.Row="0" Text="ドメイン" Margin="2,2,2,0" FontWeight="Bold"/>
+                                    <TextBlock Grid.Row="0" Text="{DynamicResource EmailDomain}" Margin="2,2,2,0" FontWeight="Bold"/>
                                     <ComboBox Grid.Row="1" x:Name="FilterDomain" Margin="4,2,4,2" Height="24" IsEditable="True" IsTextSearchEnabled="True" TextBoxBase.TextChanged="FilterComboBoxTextChanged" Tag="EmailDomain"/>
                                 </Grid>
                             </DataGridTextColumn.Header>
@@ -181,7 +207,7 @@
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
-                                    <TextBlock Grid.Row="0" Text="部署" Margin="2,2,2,0" FontWeight="Bold"/>
+                                    <TextBlock Grid.Row="0" Text="{DynamicResource Department}" Margin="2,2,2,0" FontWeight="Bold"/>
                                     <ComboBox Grid.Row="1" x:Name="FilterDepartment" Margin="4,2,4,2" Height="24" IsEditable="True" IsTextSearchEnabled="True" TextBoxBase.TextChanged="FilterComboBoxTextChanged" Tag="Department"/>
                                 </Grid>
                             </DataGridTextColumn.Header>
@@ -194,7 +220,7 @@
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
-                                    <TextBlock Grid.Row="0" Text="役職" Margin="2,2,2,0" FontWeight="Bold"/>
+                                    <TextBlock Grid.Row="0" Text="{DynamicResource JobTitle}" Margin="2,2,2,0" FontWeight="Bold"/>
                                     <ComboBox Grid.Row="1" x:Name="FilterJobTitle" Margin="4,2,4,2" Height="24" IsEditable="True" IsTextSearchEnabled="True" TextBoxBase.TextChanged="FilterComboBoxTextChanged" Tag="JobTitle"/>
                                 </Grid>
                             </DataGridTextColumn.Header>
@@ -207,7 +233,7 @@
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
-                                    <TextBlock Grid.Row="0" Text="国/地域" Margin="2,2,2,0" FontWeight="Bold"/>
+                                    <TextBlock Grid.Row="0" Text="{DynamicResource Country}" Margin="2,2,2,0" FontWeight="Bold"/>
                                     <ComboBox Grid.Row="1" x:Name="FilterCountry" Margin="4,2,4,2" Height="24" IsEditable="True" IsTextSearchEnabled="True" TextBoxBase.TextChanged="FilterComboBoxTextChanged" Tag="Country"/>
                                 </Grid>
                             </DataGridTextColumn.Header>
@@ -220,7 +246,7 @@
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
-                                    <TextBlock Grid.Row="0" Text="オフィス" Margin="2,2,2,0" FontWeight="Bold"/>
+                                    <TextBlock Grid.Row="0" Text="{DynamicResource OfficeLocation}" Margin="2,2,2,0" FontWeight="Bold"/>
                                     <ComboBox Grid.Row="1" x:Name="FilterOffice" Margin="4,2,4,2" Height="24" IsEditable="True" IsTextSearchEnabled="True" TextBoxBase.TextChanged="FilterComboBoxTextChanged" Tag="OfficeLocation"/>
                                 </Grid>
                             </DataGridTextColumn.Header>
@@ -233,7 +259,7 @@
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
-                                    <TextBlock Grid.Row="0" Text="使用場所" Margin="2,2,2,0" FontWeight="Bold"/>
+                                    <TextBlock Grid.Row="0" Text="{DynamicResource UsageLocation}" Margin="2,2,2,0" FontWeight="Bold"/>
                                     <ComboBox Grid.Row="1" x:Name="FilterUsage" Margin="4,2,4,2" Height="24" IsEditable="True" IsTextSearchEnabled="True" TextBoxBase.TextChanged="FilterComboBoxTextChanged" Tag="UsageLocation"/>
                                 </Grid>
                             </DataGridTextColumn.Header>
@@ -246,7 +272,7 @@
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
-                                    <TextBlock Grid.Row="0" Text="有効" Margin="2,2,2,0" FontWeight="Bold"/>
+                                    <TextBlock Grid.Row="0" Text="{DynamicResource AccountEnabled}" Margin="2,2,2,0" FontWeight="Bold"/>
                                     <ComboBox Grid.Row="1" x:Name="FilterEnabled" Margin="4,2,4,2" Height="24" SelectionChanged="FilterEnabledChanged">
                                         <ComboBoxItem Content="全て" IsSelected="True"/>
                                         <ComboBoxItem Content="有効"/>
@@ -263,7 +289,7 @@
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
-                                    <TextBlock Grid.Row="0" Text="ゲスト" Margin="2,2,2,0" FontWeight="Bold"/>
+                                    <TextBlock Grid.Row="0" Text="{DynamicResource IsGuest}" Margin="2,2,2,0" FontWeight="Bold"/>
                                     <ComboBox Grid.Row="1" x:Name="FilterGuest" Margin="4,2,4,2" Height="24" SelectionChanged="FilterGuestChanged">
                                         <ComboBoxItem Content="全て" IsSelected="True"/>
                                         <ComboBoxItem Content="ゲスト"/>
@@ -280,7 +306,7 @@
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
-                                    <TextBlock Grid.Row="0" Text="ライセンス" Margin="2,2,2,0" FontWeight="Bold"/>
+                                    <TextBlock Grid.Row="0" Text="{DynamicResource HasLicense}" Margin="2,2,2,0" FontWeight="Bold"/>
                                     <ComboBox Grid.Row="1" x:Name="FilterLicense" Margin="4,2,4,2" Height="24" SelectionChanged="FilterLicenseChanged">
                                         <ComboBoxItem Content="全て" IsSelected="True"/>
                                         <ComboBoxItem Content="有り"/>
