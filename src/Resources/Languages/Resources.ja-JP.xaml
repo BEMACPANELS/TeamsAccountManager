@@ -57,6 +57,31 @@
     <system:String x:Key="ImportFromExcel">Excelからインポート</system:String>
     <system:String x:Key="ImportFromCsv">CSVからインポート</system:String>
     <system:String x:Key="SelectFile">ファイルを選択</system:String>
+    
+    <!-- 一括編集 -->
+    <system:String x:Key="BulkEdit">一括編集</system:String>
+    <system:String x:Key="BulkEditTooltip">選択したユーザーを一括編集</system:String>
+    <system:String x:Key="SelectedUsers">選択したユーザー</system:String>
+    <system:String x:Key="Apply">適用</system:String>
+    <system:String x:Key="Enabled">有効</system:String>
+    <system:String x:Key="Disabled">無効</system:String>
+    
+    <!-- 変更保存 -->
+    <system:String x:Key="SaveChanges">変更を保存</system:String>
+    <system:String x:Key="SaveChangesTooltip">変更されたユーザー情報を保存</system:String>
+    
+    <!-- 変更履歴 -->
+    <system:String x:Key="ChangeHistory">変更履歴</system:String>
+    <system:String x:Key="User">ユーザー</system:String>
+    <system:String x:Key="Property">プロパティ</system:String>
+    <system:String x:Key="OriginalValue">元の値</system:String>
+    <system:String x:Key="NewValue">新しい値</system:String>
+    <system:String x:Key="ChangedAt">変更日時</system:String>
+    <system:String x:Key="Status">ステータス</system:String>
+    <system:String x:Key="Action">アクション</system:String>
+    <system:String x:Key="Revert">元に戻す</system:String>
+    <system:String x:Key="ClearHistory">履歴をクリア</system:String>
+    <system:String x:Key="Close">閉じる</system:String>
     <system:String x:Key="ExportSuccess">エクスポートが完了しました</system:String>
     <system:String x:Key="ImportSuccess">インポートが完了しました</system:String>
     <system:String x:Key="ExportFailed">エクスポートに失敗しました</system:String>

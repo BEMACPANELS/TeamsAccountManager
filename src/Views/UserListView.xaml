@@ -48,10 +48,40 @@
                               IsChecked="{Binding ShowActiveOnly}"
                               VerticalAlignment="Center"
                               Margin="0,0,16,0"/>
+                    
+                    <!-- 一括編集ボタン -->
+                    <Button Content="{DynamicResource BulkEdit}"
+                            Command="{Binding BulkEditCommand}"
+                            Style="{StaticResource MaterialDesignRaisedButton}"
+                            Margin="16,0,0,0"
+                            IsEnabled="{Binding HasSelectedUsers}">
+                        <Button.ToolTip>
+                            <TextBlock Text="{DynamicResource BulkEditTooltip}"/>
+                        </Button.ToolTip>
+                    </Button>
                 </StackPanel>
                 
                 <!-- アクションボタン -->
                 <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <!-- 変更を保存ボタン -->
+                    <Button Command="{Binding SaveChangesCommand}"
+                            Style="{StaticResource MaterialDesignRaisedAccentButton}"
+                            Content="{DynamicResource SaveChanges}"
+                            Visibility="{Binding HasUnsavedChanges, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            Margin="0,0,8,0">
+                        <Button.ToolTip>
+                            <TextBlock Text="{DynamicResource SaveChangesTooltip}"/>
+                        </Button.ToolTip>
+                    </Button>
+                    
+                    <!-- 変更履歴ボタン -->
+                    <Button Command="{Binding ShowHistoryCommand}"
+                            Style="{StaticResource MaterialDesignOutlinedButton}"
+                            ToolTip="{DynamicResource ChangeHistory}"
+                            Margin="0,0,8,0">
+                        <materialDesign:PackIcon Kind="History"/>
+                    </Button>
+                    
                     <!-- 更新ボタン -->
                     <Button Command="{Binding RefreshCommand}"
                             Style="{StaticResource MaterialDesignFlatButton}"
@@ -102,43 +132,50 @@
         
         <!-- ユーザーリスト -->
         <materialDesign:Card Grid.Row="1" Margin="16,8,16,8">
-            <DataGrid ItemsSource="{Binding UsersView}"
+            <Grid>
+                <DataGrid x:Name="UsersDataGrid"
+                      ItemsSource="{Binding UsersView}"
                       SelectedItem="{Binding SelectedUser}"
                       AutoGenerateColumns="False"
                       CanUserAddRows="False"
                       CanUserDeleteRows="False"
+                      CanUserSortColumns="True"
+                      CanUserReorderColumns="True"
+                      SelectionMode="Extended"
                       materialDesign:DataGridAssist.CellPadding="13 8 8 8"
-                      materialDesign:DataGridAssist.ColumnHeaderPadding="8">
+                      materialDesign:DataGridAssist.ColumnHeaderPadding="8"
+                      CellEditEnding="DataGrid_CellEditEnding"
+                      SelectionChanged="DataGrid_SelectionChanged">
                 
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="{DynamicResource DisplayName}"
-                                        Binding="{Binding DisplayName}"
+                                        Binding="{Binding DisplayName, UpdateSourceTrigger=PropertyChanged}"
                                         Width="200"/>
                     
                     <DataGridTextColumn Header="{DynamicResource Email}"
-                                        Binding="{Binding Email}"
-                                        Width="250"/>
+                                        Binding="{Binding Email, UpdateSourceTrigger=PropertyChanged}"
+                                        Width="250"
+                                        IsReadOnly="True"/>
                     
                     <DataGridTextColumn Header="{DynamicResource Department}"
-                                        Binding="{Binding Department}"
+                                        Binding="{Binding Department, UpdateSourceTrigger=PropertyChanged}"
                                         Width="150"/>
                     
                     <DataGridTextColumn Header="{DynamicResource JobTitle}"
-                                        Binding="{Binding JobTitle}"
+                                        Binding="{Binding JobTitle, UpdateSourceTrigger=PropertyChanged}"
                                         Width="150"/>
                     
                     <DataGridTextColumn Header="{DynamicResource OfficeLocation}"
-                                        Binding="{Binding OfficeLocation}"
+                                        Binding="{Binding OfficeLocation, UpdateSourceTrigger=PropertyChanged}"
                                         Width="120"/>
                     
                     <DataGridTextColumn Header="{DynamicResource PhoneNumber}"
-                                        Binding="{Binding PhoneNumber}"
+                                        Binding="{Binding PhoneNumber, UpdateSourceTrigger=PropertyChanged}"
                                         Width="120"/>
                     
                     <DataGridCheckBoxColumn Header="{DynamicResource AccountEnabled}"
-                                            Binding="{Binding AccountEnabled}"
-                                            Width="100"
-                                            IsReadOnly="True"/>
+                                            Binding="{Binding AccountEnabled, UpdateSourceTrigger=PropertyChanged}"
+                                            Width="100"/>
                     
                     <DataGridTextColumn Header="{DynamicResource LastSignIn}"
                                         Binding="{Binding LastSignIn, StringFormat='{}{0:yyyy-MM-dd HH:mm}'}"
@@ -164,6 +201,7 @@
                          Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
                          Style="{StaticResource MaterialDesignCircularProgressBar}"
                          Value="0"/>
+            </Grid>
         </materialDesign:Card>
         
         <!-- ステータスバー -->

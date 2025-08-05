@@ -1,120 +1,126 @@
-using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Linq;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
-using TeamsAccountManager.ViewModels;
-using TeamsAccountManager.Views;
+using TeamsAccountManager.Services;
 
 namespace TeamsAccountManager
 {
     public partial class MainWindow : Window
     {
-        private readonly MainViewModel _viewModel;
-
-        public MainWindow(MainViewModel viewModel)
+        public MainWindow()
         {
             InitializeComponent();
-            _viewModel = viewModel;
-            DataContext = _viewModel;
-
-            // 言語選択の変更イベント
+            
+            // タイトルにバージョンを追加
+            var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+            Title = $"Teams Account Manager v{version?.Major}.{version?.Minor}.{version?.Build}";
+            
+            // 言語選択イベント
             LanguageComboBox.SelectionChanged += OnLanguageChanged;
             
-            // ログアウトボタンのイベント
-            LogoutButton.Click += async (s, e) => await _viewModel.LogoutCommand.ExecuteAsync(null);
-
-            // ViewModelのプロパティ変更を監視
-            _viewModel.PropertyChanged += OnViewModelPropertyChanged;
-
-            // 初期画面の表示
-            InitializeView();
+            // 初期状態表示
+            UpdateStatus("準備完了", false);
+            UserInfoTextBlock.Text = "未ログイン";
         }
-
-        private void InitializeView()
+        
+        private void OnLanguageChanged(object sender, SelectionChangedEventArgs e)
         {
-            // 初期状態では常にログイン画面を表示
-            if (!_viewModel.IsAuthenticated)
+            if (LanguageComboBox.SelectedIndex < 0) return;
+            
+            var cultures = new[] { "ja-JP", "en-US", "vi-VN" };
+            var selectedCulture = cultures[LanguageComboBox.SelectedIndex];
+            
+            // カルチャーを設定
+            var culture = new CultureInfo(selectedCulture);
+            CultureInfo.CurrentCulture = culture;
+            CultureInfo.CurrentUICulture = culture;
+            
+            // UI要素を更新（簡易版）
+            switch (LanguageComboBox.SelectedIndex)
             {
-                ShowLoginView();
+                case 0: // 日本語
+                    Title = "Teams Account Manager";
+                    LogoutButton.Content = "ログアウト";
+                    UpdateButtonsText("Download from Server", "Upload to Server", "一括編集", "エクスポート", "インポート");
+                    break;
+                case 1: // English
+                    Title = "Teams Account Manager";
+                    LogoutButton.Content = "Logout";
+                    UpdateButtonsText("Download from Server", "Upload to Server", "Bulk Edit", "Export", "Import");
+                    break;
+                case 2: // Tiếng Việt
+                    Title = "Teams Account Manager";
+                    LogoutButton.Content = "Đăng xuất";
+                    UpdateButtonsText("Download from Server", "Upload to Server", "Sửa hàng loạt", "Xuất", "Nhập");
+                    break;
+            }
+            
+            StatusTextBlock.Text = $"Language changed to {selectedCulture}";
+        }
+        
+        private void UpdateButtonsText(string refresh, string save, string bulkEdit, string export, string import)
+        {
+            // UserListViewのボタンのテキストを更新する処理（後で実装）
+            // 現在のコンテンツがUserListView_Simpleの場合のみ更新
+            if (MainContent.Content is Views.UserListView_Simple userListView)
+            {
+                userListView.RefreshButton.Content = $"⬇️ {refresh}";
+                userListView.SaveButton.Content = $"⬆️ {save}";
+                userListView.BulkEditButton.Content = $"✏️ {bulkEdit}";
+                userListView.ExportButton.Content = $"📥 {export}";
+                userListView.ImportButton.Content = $"📤 {import}";
+            }
+        }
+        
+        private async void LogoutButton_Click(object sender, RoutedEventArgs e)
+        {
+            var result = MessageBox.Show("ログアウトしますか？", "確認", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            
+            if (result == MessageBoxResult.Yes)
+            {
+                try
+                {
+                    UpdateStatus("ログアウト中...", true);
+                    
+                    // 認証サービスでログアウト
+                    var authService = App.GetService<AuthenticationService>();
+                    await authService.SignOutAsync();
+                    
+                    // ログイン画面に戻る
+                    UserInfoTextBlock.Text = "未ログイン";
+                    var loginView = new Views.LoginView();
+                    NavigateToContent(loginView);
+                    
+                    UpdateStatus("ログアウトしました", false);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"ログアウト中にエラーが発生しました:\n{ex.Message}", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+                    UpdateStatus("エラーが発生しました", false);
+                }
+            }
+        }
+        
+        public void UpdateStatus(string message, bool showProgress = false)
+        {
+            StatusTextBlock.Text = message;
+            StatusProgressBar.Visibility = showProgress ? Visibility.Visible : Visibility.Collapsed;
+            
+            if (!showProgress)
+            {
+                StatusProgressBar.IsIndeterminate = false;
+                StatusProgressBar.Value = 0;
             }
             else
             {
-                ShowUserListView();
+                StatusProgressBar.IsIndeterminate = true;
             }
         }
-
-        private void OnViewModelPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        
+        public void NavigateToContent(object content)
         {
-            if (e.PropertyName == nameof(MainViewModel.IsAuthenticated))
-            {
-                if (_viewModel.IsAuthenticated)
-                {
-                    ShowUserListView();
-                }
-                else
-                {
-                    ShowLoginView();
-                }
-            }
-        }
-
-        private void OnLanguageChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (LanguageComboBox.SelectedItem is ComboBoxItem item && item.Tag != null)
-            {
-                var culture = item.Tag.ToString()!;
-                _viewModel.ChangeLanguageCommand.Execute(culture);
-            }
-        }
-
-        private void ShowLoginView()
-        {
-            var serviceProvider = ((App)Application.Current).Services;
-            var loginView = serviceProvider.GetRequiredService<LoginView>();
-            var loginViewModel = serviceProvider.GetRequiredService<LoginViewModel>();
-            
-            // ログイン成功イベントをサブスクライブ
-            loginViewModel.LoginSucceeded += OnLoginSucceeded;
-            loginView.DataContext = loginViewModel;
-            
-            MainFrame.Navigate(loginView);
-            LogoutButton.IsEnabled = false;
-            UserNameText.Text = string.Empty;
-        }
-
-        private void ShowUserListView()
-        {
-            var serviceProvider = ((App)Application.Current).Services;
-            var userListView = serviceProvider.GetRequiredService<UserListView>();
-            var userListViewModel = serviceProvider.GetRequiredService<UserListViewModel>();
-            
-            userListView.DataContext = userListViewModel;
-            MainFrame.Navigate(userListView);
-            
-            LogoutButton.IsEnabled = true;
-            UserNameText.Text = _viewModel.CurrentUserName;
-            
-            // ユーザーリストをロード
-            userListViewModel.LoadUsersCommand.Execute(null);
-        }
-
-        private void OnLoginSucceeded(object? sender, EventArgs e)
-        {
-            // ログイン成功時の処理
-            _viewModel.SetAuthenticatedUser(_viewModel.AuthService.CurrentUserName ?? "Unknown");
-            
-            // イベントのサブスクライブを解除
-            if (sender is LoginViewModel loginViewModel)
-            {
-                loginViewModel.LoginSucceeded -= OnLoginSucceeded;
-            }
-        }
-
-        public void UpdateStatus(string message, bool showProgress = false)
-        {
-            StatusText.Text = message;
-            StatusProgress.Visibility = showProgress ? Visibility.Visible : Visibility.Collapsed;
+            MainContent.Content = content;
         }
     }
 }

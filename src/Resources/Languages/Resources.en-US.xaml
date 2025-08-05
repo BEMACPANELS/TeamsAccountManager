@@ -57,6 +57,31 @@
     <system:String x:Key="ImportFromExcel">Import from Excel</system:String>
     <system:String x:Key="ImportFromCsv">Import from CSV</system:String>
     <system:String x:Key="SelectFile">Select File</system:String>
+    
+    <!-- Bulk Edit -->
+    <system:String x:Key="BulkEdit">Bulk Edit</system:String>
+    <system:String x:Key="BulkEditTooltip">Bulk edit selected users</system:String>
+    <system:String x:Key="SelectedUsers">Selected Users</system:String>
+    <system:String x:Key="Apply">Apply</system:String>
+    <system:String x:Key="Enabled">Enabled</system:String>
+    <system:String x:Key="Disabled">Disabled</system:String>
+    
+    <!-- Save Changes -->
+    <system:String x:Key="SaveChanges">Save Changes</system:String>
+    <system:String x:Key="SaveChangesTooltip">Save modified user information</system:String>
+    
+    <!-- Change History -->
+    <system:String x:Key="ChangeHistory">Change History</system:String>
+    <system:String x:Key="User">User</system:String>
+    <system:String x:Key="Property">Property</system:String>
+    <system:String x:Key="OriginalValue">Original Value</system:String>
+    <system:String x:Key="NewValue">New Value</system:String>
+    <system:String x:Key="ChangedAt">Changed At</system:String>
+    <system:String x:Key="Status">Status</system:String>
+    <system:String x:Key="Action">Action</system:String>
+    <system:String x:Key="Revert">Revert</system:String>
+    <system:String x:Key="ClearHistory">Clear History</system:String>
+    <system:String x:Key="Close">Close</system:String>
     <system:String x:Key="ExportSuccess">Export completed successfully</system:String>
     <system:String x:Key="ImportSuccess">Import completed successfully</system:String>
     <system:String x:Key="ExportFailed">Export failed</system:String>

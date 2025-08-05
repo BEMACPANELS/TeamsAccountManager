@@ -3,76 +3,64 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     
-    <Grid>
-        <materialDesign:Card Padding="32" 
-                             HorizontalAlignment="Center" 
-                             VerticalAlignment="Center"
-                             Width="400">
+    <Grid Background="#F5F5F5">
+        <Border Background="White" 
+                BorderBrush="#E0E0E0" 
+                BorderThickness="1"
+                CornerRadius="8"
+                Padding="32" 
+                HorizontalAlignment="Center" 
+                VerticalAlignment="Center"
+                Width="400">
             <StackPanel>
-                <!-- ロゴ/アイコン -->
-                <materialDesign:PackIcon Kind="MicrosoftTeams" 
-                                         Width="64" 
-                                         Height="64" 
-                                         HorizontalAlignment="Center"
-                                         Foreground="{StaticResource PrimaryHueMidBrush}"
-                                         Margin="0,0,0,16"/>
-                
                 <!-- タイトル -->
-                <TextBlock Text="{DynamicResource AppTitle}" 
-                           Style="{StaticResource MaterialDesignHeadline5TextBlock}"
+                <TextBlock Text="Teams Account Manager" 
+                           FontSize="24"
+                           FontWeight="Bold"
                            HorizontalAlignment="Center"
                            Margin="0,0,0,8"/>
                 
                 <!-- 説明 -->
-                <TextBlock Text="{DynamicResource LoginMessage}" 
-                           Style="{StaticResource MaterialDesignBody1TextBlock}"
+                <TextBlock Text="Microsoft アカウントでログインしてください" 
+                           FontSize="14"
                            HorizontalAlignment="Center"
                            TextWrapping="Wrap"
                            Opacity="0.7"
                            Margin="0,0,0,24"/>
                 
                 <!-- ログインボタン -->
-                <Button Command="{Binding LoginCommand}"
-                        IsEnabled="{Binding IsLoading, Converter={StaticResource InverseBooleanConverter}}"
-                        Style="{StaticResource MaterialDesignRaisedButton}"
-                        materialDesign:ButtonAssist.CornerRadius="4"
+                <Button x:Name="LoginButton"
+                        Background="#0078D4"
+                        Foreground="White"
                         Height="48"
+                        FontSize="16"
                         Margin="0,0,0,16">
                     <StackPanel Orientation="Horizontal">
-                        <materialDesign:PackIcon Kind="Microsoft" 
-                                                 VerticalAlignment="Center"
-                                                 Margin="0,0,8,0"/>
-                        <TextBlock Text="{DynamicResource Login}" 
+                        <TextBlock Text="🔐 " 
+                                   VerticalAlignment="Center"
+                                   Margin="0,0,8,0"/>
+                        <TextBlock Text="Microsoft でログイン" 
                                    VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
                 
                 <!-- ステータスメッセージ -->
-                <TextBlock Text="{Binding StatusMessage}"
-                           Style="{StaticResource MaterialDesignBody2TextBlock}"
+                <TextBlock x:Name="StatusTextBlock"
                            HorizontalAlignment="Center"
                            TextWrapping="Wrap"
-                           Margin="0,8,0,0">
-                    <TextBlock.Style>
-                        <Style TargetType="TextBlock" BasedOn="{StaticResource MaterialDesignBody2TextBlock}">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding StatusMessage}" Value="">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </TextBlock.Style>
-                </TextBlock>
+                           Margin="0,8,0,0"
+                           Visibility="Collapsed"/>
                 
                 <!-- プログレスバー -->
-                <ProgressBar IsIndeterminate="True"
+                <ProgressBar x:Name="LoginProgressBar"
+                             IsIndeterminate="True"
+                             Height="4"
                              Margin="0,16,0,0"
-                             Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                             Visibility="Collapsed"/>
             </StackPanel>
-        </materialDesign:Card>
+        </Border>
     </Grid>
 </UserControl>

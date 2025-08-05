@@ -46,7 +46,7 @@ namespace TeamsAccountManager.Services
                     worksheet.Cell(row, 4).Value = user.JobTitle;
                     worksheet.Cell(row, 5).Value = user.OfficeLocation;
                     worksheet.Cell(row, 6).Value = user.PhoneNumber;
-                    worksheet.Cell(row, 7).Value = user.AccountEnabled ? "Yes" : "No";
+                    worksheet.Cell(row, 7).Value = user.AccountEnabled == true ? "Yes" : "No";
                     worksheet.Cell(row, 8).Value = user.LastSignIn?.ToString("yyyy-MM-dd HH:mm:ss");
                     row++;
                 }
@@ -80,7 +80,8 @@ namespace TeamsAccountManager.Services
             {
                 using var workbook = new XLWorkbook(filePath);
                 var worksheet = workbook.Worksheet(1);
-                var rows = worksheet.RangeUsed().RowsUsed().Skip(1); // ヘッダー行をスキップ
+                var rows = worksheet.RangeUsed()?.RowsUsed().Skip(1); // ヘッダー行をスキップ
+                if (rows == null) return users;
 
                 await Task.Run(() =>
                 {

@@ -107,6 +107,12 @@ namespace TeamsAccountManager.Models
         /// </summary>
         public bool? AccountEnabled { get; set; }
 
+        /// <summary>
+        /// ユーザータイプ (Member/Guest)
+        /// </summary>
+        public string? UserType { get; set; }
+
+
         // アプリケーション用プロパティ
 
         /// <summary>
@@ -132,7 +138,27 @@ namespace TeamsAccountManager.Models
         /// <summary>
         /// メールアドレス（Mailがnullの場合はUserPrincipalNameを返す）
         /// </summary>
-        public string Email => Mail ?? UserPrincipalName;
+        public string Email 
+        { 
+            get => Mail ?? UserPrincipalName;
+            set => Mail = value;
+        }
+        
+        /// <summary>
+        /// メールアドレスのドメイン部分（@以降）
+        /// </summary>
+        public string EmailDomain
+        {
+            get
+            {
+                var email = Email;
+                if (string.IsNullOrEmpty(email))
+                    return string.Empty;
+                    
+                var atIndex = email.IndexOf('@');
+                return atIndex >= 0 ? email.Substring(atIndex + 1) : string.Empty;
+            }
+        }
 
         /// <summary>
         /// 電話番号（ビジネス電話または携帯電話）
@@ -147,7 +173,22 @@ namespace TeamsAccountManager.Models
                     return BusinessPhones[0];
                 return string.Empty;
             }
+            set
+            {
+                if (!string.IsNullOrEmpty(value))
+                {
+                    MobilePhone = value;
+                    // ビジネス電話も更新
+                    BusinessPhones = new[] { value };
+                }
+            }
         }
+
+        /// <summary>
+        /// ゲストユーザーかどうか
+        /// </summary>
+        public bool IsGuest => UserType?.Equals("Guest", StringComparison.OrdinalIgnoreCase) ?? 
+                              UserPrincipalName?.Contains("#EXT#", StringComparison.OrdinalIgnoreCase) ?? false;
 
         /// <summary>
         /// コンストラクタ
@@ -240,6 +281,7 @@ namespace TeamsAccountManager.Models
                 State = State,
                 UsageLocation = UsageLocation,
                 AccountEnabled = AccountEnabled,
+                UserType = UserType,
                 IsModified = IsModified,
                 ErrorMessage = ErrorMessage,
                 IsSelected = IsSelected,

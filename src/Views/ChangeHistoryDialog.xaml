@@ -1,0 +1,100 @@
+<UserControl x:Class="TeamsAccountManager.Views.ChangeHistoryDialog"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d" 
+             Width="800" MinHeight="500">
+    
+    <materialDesign:Card Padding="24">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            
+            <!-- ヘッダー -->
+            <TextBlock Grid.Row="0" Text="{DynamicResource ChangeHistory}" 
+                       Style="{StaticResource MaterialDesignHeadline5TextBlock}"
+                       Margin="0,0,0,16"/>
+            
+            <!-- 変更履歴リスト -->
+            <DataGrid Grid.Row="1" ItemsSource="{Binding ChangeHistory}"
+                      AutoGenerateColumns="False"
+                      CanUserAddRows="False"
+                      CanUserDeleteRows="False"
+                      IsReadOnly="True"
+                      materialDesign:DataGridAssist.CellPadding="13 8 8 8"
+                      materialDesign:DataGridAssist.ColumnHeaderPadding="8"
+                      MaxHeight="400">
+                
+                <DataGrid.Columns>
+                    <!-- ユーザー名 -->
+                    <DataGridTextColumn Header="{DynamicResource User}"
+                                        Binding="{Binding UserDisplayName}"
+                                        Width="150"/>
+                    
+                    <!-- プロパティ名 -->
+                    <DataGridTextColumn Header="{DynamicResource Property}"
+                                        Binding="{Binding PropertyDisplayName}"
+                                        Width="120"/>
+                    
+                    <!-- 元の値 -->
+                    <DataGridTextColumn Header="{DynamicResource OriginalValue}"
+                                        Binding="{Binding OriginalValue}"
+                                        Width="150"/>
+                    
+                    <!-- 新しい値 -->
+                    <DataGridTextColumn Header="{DynamicResource NewValue}"
+                                        Binding="{Binding NewValue}"
+                                        Width="150"/>
+                    
+                    <!-- 変更日時 -->
+                    <DataGridTextColumn Header="{DynamicResource ChangedAt}"
+                                        Binding="{Binding ChangedAt, StringFormat='{}{0:yyyy-MM-dd HH:mm:ss}'}"
+                                        Width="150"/>
+                    
+                    <!-- ステータス -->
+                    <DataGridTemplateColumn Header="{DynamicResource Status}" Width="100">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding StatusText}"
+                                           Foreground="{Binding StatusColor}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    
+                    <!-- アクション -->
+                    <DataGridTemplateColumn Header="{DynamicResource Action}" Width="80">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Style="{StaticResource MaterialDesignFlatButton}"
+                                        Command="{Binding DataContext.RevertChangeCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                        CommandParameter="{Binding}"
+                                        Visibility="{Binding CanRevert, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                        ToolTip="{DynamicResource Revert}">
+                                    <materialDesign:PackIcon Kind="Undo" Width="16" Height="16"/>
+                                </Button>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+            
+            <!-- ボタン -->
+            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,16,0,0">
+                <Button Content="{DynamicResource ClearHistory}"
+                        Style="{StaticResource MaterialDesignOutlinedButton}"
+                        Command="{Binding ClearHistoryCommand}"
+                        Margin="0,0,8,0"
+                        IsEnabled="{Binding HasHistory}"/>
+                
+                <Button Content="{DynamicResource Close}"
+                        Style="{StaticResource MaterialDesignFlatButton}"
+                        Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"/>
+            </StackPanel>
+        </Grid>
+    </materialDesign:Card>
+</UserControl>

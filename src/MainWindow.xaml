@@ -3,85 +3,81 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="{DynamicResource AppTitle}"
+        Title="Teams Account Manager"
         Height="720" Width="1280"
-        WindowStartupLocation="CenterScreen"
-        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
-        TextElement.FontWeight="Regular"
-        TextElement.FontSize="13"
-        TextOptions.TextFormattingMode="Ideal"
-        TextOptions.TextRenderingMode="Auto"
-        Background="{DynamicResource MaterialDesignPaper}"
-        FontFamily="{DynamicResource MaterialDesignFont}">
+        WindowStartupLocation="CenterScreen">
     
-    <materialDesign:DialogHost Identifier="RootDialog">
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
 
-            <!-- ヘッダー -->
-            <materialDesign:ColorZone Grid.Row="0" Mode="PrimaryDark" Padding="16">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
+        <!-- ヘッダー -->
+        <Border Grid.Row="0" Background="#1976D2" Padding="16">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <TextBlock Grid.Column="0" 
+                           Text="Teams Account Manager" 
+                           VerticalAlignment="Center"
+                           Foreground="White"
+                           FontSize="20"
+                           FontWeight="Medium"/>
+                
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <!-- 言語選択 -->
+                    <ComboBox x:Name="LanguageComboBox" 
+                              Margin="0,0,16,0"
+                              SelectedIndex="0"
+                              Width="100">
+                        <ComboBoxItem>日本語</ComboBoxItem>
+                        <ComboBoxItem>English</ComboBoxItem>
+                        <ComboBoxItem>Tiếng Việt</ComboBoxItem>
+                    </ComboBox>
                     
-                    <TextBlock Grid.Column="0" 
-                               Text="{DynamicResource AppTitle}" 
+                    <!-- ユーザー情報 -->
+                    <TextBlock x:Name="UserInfoTextBlock" 
                                VerticalAlignment="Center" 
-                               Style="{StaticResource MaterialDesignHeadline6TextBlock}"/>
+                               Margin="0,0,16,0"
+                               Foreground="White"/>
                     
-                    <StackPanel Grid.Column="1" Orientation="Horizontal">
-                        <!-- 言語選択 -->
-                        <ComboBox x:Name="LanguageComboBox" 
-                                  Margin="0,0,16,0"
-                                  materialDesign:HintAssist.Hint="{DynamicResource Language}"
-                                  SelectedIndex="0">
-                            <ComboBoxItem Content="日本語" Tag="ja-JP"/>
-                            <ComboBoxItem Content="Tiếng Việt" Tag="vi-VN"/>
-                            <ComboBoxItem Content="English" Tag="en-US"/>
-                        </ComboBox>
-                        
-                        <!-- ユーザー情報 -->
-                        <TextBlock x:Name="UserNameText" 
-                                   VerticalAlignment="Center" 
-                                   Margin="0,0,16,0"/>
-                        
-                        <!-- ログアウトボタン -->
-                        <Button x:Name="LogoutButton" 
-                                Style="{StaticResource MaterialDesignFlatButton}"
-                                Content="{DynamicResource Logout}"/>
-                    </StackPanel>
-                </Grid>
-            </materialDesign:ColorZone>
+                    <!-- ログアウトボタン -->
+                    <Button x:Name="LogoutButton" 
+                            Content="ログアウト"
+                            Click="LogoutButton_Click"
+                            Margin="0,0,0,0"/>
+                </StackPanel>
+            </Grid>
+        </Border>
 
-            <!-- メインコンテンツ -->
-            <Frame x:Name="MainFrame" 
-                   Grid.Row="1" 
-                   NavigationUIVisibility="Hidden"/>
+        <!-- メインコンテンツ -->
+        <ContentControl x:Name="MainContent" Grid.Row="1"/>
 
-            <!-- ステータスバー -->
-            <StatusBar Grid.Row="2">
-                <StatusBarItem>
-                    <TextBlock x:Name="StatusText" Text="{DynamicResource Ready}"/>
-                </StatusBarItem>
-                <Separator/>
-                <StatusBarItem>
-                    <ProgressBar x:Name="StatusProgress" 
-                                 Width="100" 
-                                 Height="10" 
-                                 Visibility="Collapsed"/>
-                </StatusBarItem>
-                <StatusBarItem HorizontalAlignment="Right">
-                    <TextBlock x:Name="VersionText" Text="v1.0.0"/>
-                </StatusBarItem>
-            </StatusBar>
-        </Grid>
-    </materialDesign:DialogHost>
+        <!-- ステータスバー -->
+        <Border Grid.Row="2" Background="#E0E0E0" Padding="8,4">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <TextBlock x:Name="StatusTextBlock" 
+                           Grid.Column="0" 
+                           VerticalAlignment="Center"/>
+                
+                <ProgressBar x:Name="StatusProgressBar" 
+                             Grid.Column="1" 
+                             Width="200" 
+                             Height="16" 
+                             Margin="8,0,0,0"
+                             Visibility="Collapsed"/>
+            </Grid>
+        </Border>
+    </Grid>
 </Window>

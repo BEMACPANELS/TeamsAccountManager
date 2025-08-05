@@ -18,6 +18,7 @@ namespace TeamsAccountManager.Services
         
         private string? _accessToken;
         private AuthenticationResult? _authResult;
+        private string? _userRoles;
 
         public AuthenticationService(ILogger<AuthenticationService> logger, IConfiguration configuration)
         {
@@ -29,13 +30,23 @@ namespace TeamsAccountManager.Services
             var clientId = _configuration["AzureAd:ClientId"];
             var redirectUri = _configuration["AzureAd:RedirectUri"];
 
-            // PublicClientApplicationの作成
-            _app = PublicClientApplicationBuilder
-                .Create(clientId)
-                .WithAuthority($"https://login.microsoftonline.com/{tenantId}")
-                .WithRedirectUri(redirectUri)
-                .WithLogging(LogCallback, LogLevel.Verbose, true)
-                .Build();
+            // モックモードの判定
+            if (string.IsNullOrEmpty(tenantId) || string.IsNullOrEmpty(clientId))
+            {
+                _logger.LogWarning("Azure AD設定が未設定のため、モックモードで動作します");
+                // モックモードでは_appはnullのまま
+                _app = null!;
+            }
+            else
+            {
+                // PublicClientApplicationの作成
+                _app = PublicClientApplicationBuilder
+                    .Create(clientId)
+                    .WithAuthority($"https://login.microsoftonline.com/{tenantId}")
+                    .WithRedirectUri(redirectUri)
+                    .WithLogging(LogCallback, Microsoft.Identity.Client.LogLevel.Verbose, true)
+                    .Build();
+            }
         }
 
         /// <summary>
@@ -46,7 +57,16 @@ namespace TeamsAccountManager.Services
         /// <summary>
         /// 現在のユーザー名を取得
         /// </summary>
-        public string? CurrentUserName => _authResult?.Account?.Username;
+        public string? CurrentUserName => _authResult?.Account?.Username ?? (_app == null ? "テストユーザー" : null);
+
+        /// <summary>
+        /// 現在のユーザーの権限を取得・設定
+        /// </summary>
+        public string? CurrentUserRoles 
+        { 
+            get => _userRoles;
+            set => _userRoles = value;
+        }
 
         /// <summary>
         /// アクセストークンを取得
@@ -58,6 +78,12 @@ namespace TeamsAccountManager.Services
         /// </summary>
         public async Task<bool> TrySignInSilentlyAsync()
         {
+            // モックモードの場合
+            if (_app == null)
+            {
+                return false; // サイレント認証は失敗扱い
+            }
+            
             try
             {
                 var scopes = _configuration.GetSection("AzureAd:Scopes").Get<string[]>() ?? Array.Empty<string>();
@@ -93,6 +119,16 @@ namespace TeamsAccountManager.Services
         /// </summary>
         public async Task<bool> LoginAsync()
         {
+            // モックモードの場合
+            if (_app == null)
+            {
+                _logger.LogInformation("モックモードでログイン");
+                _accessToken = "mock-access-token";
+                _authResult = null; // モックモードではnull
+                await Task.Delay(1000); // 認証処理のシミュレーション
+                return true;
+            }
+            
             // まずサイレント認証を試行
             if (await TrySignInSilentlyAsync())
             {
@@ -108,6 +144,13 @@ namespace TeamsAccountManager.Services
         /// </summary>
         private async Task<bool> SignInAsync()
         {
+            // モックモードの場合
+            if (_app == null)
+            {
+                _logger.LogWarning("モックモードではインタラクティブ認証はサポートされていません");
+                return false;
+            }
+            
             try
             {
                 var scopes = _configuration.GetSection("AzureAd:Scopes").Get<string[]>() ?? Array.Empty<string>();
@@ -121,6 +164,8 @@ namespace TeamsAccountManager.Services
                 _accessToken = result.AccessToken;
 
                 _logger.LogInformation($"インタラクティブ認証成功: {result.Account.Username}");
+                _logger.LogInformation($"テナントID: {result.TenantId}");
+                _logger.LogInformation($"ユーザーID: {result.UniqueId}");
                 return true;
             }
             catch (MsalException ex)
@@ -218,7 +263,7 @@ namespace TeamsAccountManager.Services
         /// <summary>
         /// MSALログコールバック
         /// </summary>
-        private void LogCallback(LogLevel level, string message, bool containsPii)
+        private void LogCallback(Microsoft.Identity.Client.LogLevel level, string message, bool containsPii)
         {
             if (containsPii)
             {
@@ -227,16 +272,16 @@ namespace TeamsAccountManager.Services
 
             switch (level)
             {
-                case LogLevel.Error:
+                case Microsoft.Identity.Client.LogLevel.Error:
                     _logger.LogError("MSAL: {Message}", message);
                     break;
-                case LogLevel.Warning:
+                case Microsoft.Identity.Client.LogLevel.Warning:
                     _logger.LogWarning("MSAL: {Message}", message);
                     break;
-                case LogLevel.Info:
+                case Microsoft.Identity.Client.LogLevel.Info:
                     _logger.LogInformation("MSAL: {Message}", message);
                     break;
-                case LogLevel.Verbose:
+                case Microsoft.Identity.Client.LogLevel.Verbose:
                     _logger.LogDebug("MSAL: {Message}", message);
                     break;
             }

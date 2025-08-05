@@ -54,7 +54,7 @@ namespace TeamsAccountManager.Services
                     csv.WriteField(user.JobTitle);
                     csv.WriteField(user.OfficeLocation);
                     csv.WriteField(user.PhoneNumber);
-                    csv.WriteField(user.AccountEnabled ? "Yes" : "No");
+                    csv.WriteField(user.AccountEnabled == true ? "Yes" : "No");
                     csv.WriteField(user.LastSignIn?.ToString("yyyy-MM-dd HH:mm:ss"));
                     await csv.NextRecordAsync();
                 }

@@ -57,6 +57,31 @@
     <system:String x:Key="ImportFromExcel">Nhập từ Excel</system:String>
     <system:String x:Key="ImportFromCsv">Nhập từ CSV</system:String>
     <system:String x:Key="SelectFile">Chọn tệp</system:String>
+    
+    <!-- Chỉnh sửa hàng loạt -->
+    <system:String x:Key="BulkEdit">Chỉnh sửa hàng loạt</system:String>
+    <system:String x:Key="BulkEditTooltip">Chỉnh sửa hàng loạt người dùng đã chọn</system:String>
+    <system:String x:Key="SelectedUsers">Người dùng đã chọn</system:String>
+    <system:String x:Key="Apply">Áp dụng</system:String>
+    <system:String x:Key="Enabled">Kích hoạt</system:String>
+    <system:String x:Key="Disabled">Vô hiệu hóa</system:String>
+    
+    <!-- Lưu thay đổi -->
+    <system:String x:Key="SaveChanges">Lưu thay đổi</system:String>
+    <system:String x:Key="SaveChangesTooltip">Lưu thông tin người dùng đã chỉnh sửa</system:String>
+    
+    <!-- Lịch sử thay đổi -->
+    <system:String x:Key="ChangeHistory">Lịch sử thay đổi</system:String>
+    <system:String x:Key="User">Người dùng</system:String>
+    <system:String x:Key="Property">Thuộc tính</system:String>
+    <system:String x:Key="OriginalValue">Giá trị gốc</system:String>
+    <system:String x:Key="NewValue">Giá trị mới</system:String>
+    <system:String x:Key="ChangedAt">Thời gian thay đổi</system:String>
+    <system:String x:Key="Status">Trạng thái</system:String>
+    <system:String x:Key="Action">Hành động</system:String>
+    <system:String x:Key="Revert">Hoàn tác</system:String>
+    <system:String x:Key="ClearHistory">Xóa lịch sử</system:String>
+    <system:String x:Key="Close">Đóng</system:String>
     <system:String x:Key="ExportSuccess">Xuất dữ liệu thành công</system:String>
     <system:String x:Key="ImportSuccess">Nhập dữ liệu thành công</system:String>
     <system:String x:Key="ExportFailed">Xuất dữ liệu thất bại</system:String>

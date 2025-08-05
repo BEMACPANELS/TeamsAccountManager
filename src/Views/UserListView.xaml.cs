@@ -6,6 +6,7 @@ using TeamsAccountManager.Models;
 using TeamsAccountManager.ViewModels;
 using MaterialDesignThemes.Wpf;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace TeamsAccountManager.Views
 {
@@ -104,7 +105,8 @@ namespace TeamsAccountManager.Views
 
         private void OnImportProgress(object? sender, ProgressEventArgs e)
         {
-            // 進捗バーを更新
+            // 進捗バーを更新 - 一時的にコメントアウト
+            /*
             Application.Current.Dispatcher.Invoke(() =>
             {
                 if (Application.Current.MainWindow is MainWindow mainWindow)
@@ -112,6 +114,55 @@ namespace TeamsAccountManager.Views
                     mainWindow.UpdateStatus($"{e.Message} ({e.Current}/{e.Total})", true);
                 }
             });
+            */
+        }
+
+        private void DataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        {
+            if (e.EditAction == DataGridEditAction.Cancel)
+                return;
+
+            if (e.EditingElement is TextBox textBox && e.Row.DataContext is User user)
+            {
+                var binding = (e.Column as DataGridBoundColumn)?.Binding as System.Windows.Data.Binding;
+                var propertyName = binding?.Path?.Path;
+                if (propertyName != null)
+                {
+                    // 変更前の値を保存
+                    var originalValue = user.GetType().GetProperty(propertyName)?.GetValue(user);
+                    
+                    // ViewModelに通知
+                    if (DataContext is UserListViewModel viewModel)
+                    {
+                        viewModel.TrackUserChange(user, propertyName, originalValue, textBox.Text);
+                    }
+                }
+            }
+            else if (e.EditingElement is CheckBox checkBox && e.Row.DataContext is User checkBoxUser)
+            {
+                var binding = (e.Column as DataGridBoundColumn)?.Binding as System.Windows.Data.Binding;
+                var propertyName = binding?.Path?.Path;
+                if (propertyName != null)
+                {
+                    // 変更前の値を保存
+                    var originalValue = checkBoxUser.GetType().GetProperty(propertyName)?.GetValue(checkBoxUser);
+                    
+                    // ViewModelに通知
+                    if (DataContext is UserListViewModel viewModel)
+                    {
+                        viewModel.TrackUserChange(checkBoxUser, propertyName, originalValue, checkBox.IsChecked);
+                    }
+                }
+            }
+        }
+
+        private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (DataContext is UserListViewModel viewModel && sender is DataGrid dataGrid)
+            {
+                var selectedUsers = dataGrid.SelectedItems.Cast<User>().ToList();
+                viewModel.SetSelectedUsers(selectedUsers);
+            }
         }
     }
 }

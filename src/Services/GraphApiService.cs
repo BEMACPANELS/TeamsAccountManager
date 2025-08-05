@@ -7,9 +7,11 @@ using Microsoft.Kiota.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using TeamsAccountManager.Models;
+using Microsoft.Graph.Models.ODataErrors;
 
 namespace TeamsAccountManager.Services
 {
@@ -96,6 +98,8 @@ namespace TeamsAccountManager.Services
         {
             try
             {
+                _logger.LogInformation("GetUsersAsync: 開始");
+                
                 InitializeGraphClient();
                 if (_graphClient == null)
                 {
@@ -104,16 +108,18 @@ namespace TeamsAccountManager.Services
 
                 var users = new List<Models.User>();
                 var pageSize = _configuration.GetValue<int>("Application:PageSize", 100);
+                _logger.LogInformation($"GetUsersAsync: ページサイズ = {pageSize}");
                 
                 // 取得するプロパティを指定
                 var selectProperties = new[]
                 {
-                    "id", "businessPhones", "displayName", "givenName", "jobTitle", "mail",
-                    "mobilePhone", "officeLocation", "preferredLanguage", "surname", 
-                    "userPrincipalName", "department", "companyName", "country", "city",
-                    "postalCode", "state", "usageLocation", "accountEnabled"
+                    "id", "displayName", "givenName", "surname", "mail", "userPrincipalName",
+                    "businessPhones", "mobilePhone", "officeLocation", "department", 
+                    "jobTitle", "companyName", "country", "usageLocation", "accountEnabled"
                 };
+                _logger.LogInformation($"GetUsersAsync: 取得プロパティ数 = {selectProperties.Length}");
 
+                _logger.LogInformation("GetUsersAsync: Graph API呼び出し開始");
                 var request = _graphClient.Users
                     .GetAsync(requestConfiguration =>
                     {
@@ -123,32 +129,56 @@ namespace TeamsAccountManager.Services
                     });
 
                 var response = await request ?? new UserCollectionResponse();
+                _logger.LogInformation($"GetUsersAsync: 初回レスポンス取得完了");
                 var totalCount = 0;
 
                 while (response?.Value != null)
                 {
+                    _logger.LogInformation($"GetUsersAsync: ページ処理開始 - {response.Value.Count}件");
+                    
                     foreach (var graphUser in response.Value)
                     {
-                        users.Add(Models.User.FromGraphUser(graphUser));
-                        totalCount++;
-                        
-                        // 進捗報告
-                        if (totalCount % 50 == 0)
+                        try
                         {
-                            progress?.Report(totalCount);
+                            var user = Models.User.FromGraphUser(graphUser);
+                            users.Add(user);
+                            totalCount++;
+                            
+                            // デバッグ: 最初の数件のユーザー情報を出力
+                            if (totalCount <= 3)
+                            {
+                                _logger.LogInformation($"ユーザー {totalCount}: {user.DisplayName}");
+                                _logger.LogInformation($"  - GivenName: {user.GivenName ?? "null"}");
+                                _logger.LogInformation($"  - Surname: {user.Surname ?? "null"}");
+                                _logger.LogInformation($"  - Country: {user.Country ?? "null"}");
+                                _logger.LogInformation($"  - OfficeLocation: {user.OfficeLocation ?? "null"}");
+                                _logger.LogInformation($"  - UsageLocation: {user.UsageLocation ?? "null"}");
+                            }
+                            
+                            // 進捗報告
+                            if (totalCount % 50 == 0)
+                            {
+                                _logger.LogInformation($"GetUsersAsync: {totalCount}件処理完了");
+                                progress?.Report(totalCount);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.LogError(ex, $"GetUsersAsync: ユーザー変換エラー - ID: {graphUser.Id}");
                         }
                     }
 
                     // 次のページがあるかチェック
-                    // 次のページを取得
                     if (!string.IsNullOrEmpty(response.OdataNextLink))
                     {
+                        _logger.LogInformation("GetUsersAsync: 次のページを取得");
                         response = await _graphClient.Users
                             .WithUrl(response.OdataNextLink)
                             .GetAsync();
                     }
                     else
                     {
+                        _logger.LogInformation("GetUsersAsync: 全ページ取得完了");
                         break;
                     }
                 }
@@ -179,10 +209,9 @@ namespace TeamsAccountManager.Services
 
                 var selectProperties = new[]
                 {
-                    "id", "businessPhones", "displayName", "givenName", "jobTitle", "mail",
-                    "mobilePhone", "officeLocation", "preferredLanguage", "surname", 
-                    "userPrincipalName", "department", "companyName", "country", "city",
-                    "postalCode", "state", "usageLocation", "accountEnabled"
+                    "id", "displayName", "givenName", "surname", "mail", "userPrincipalName",
+                    "businessPhones", "mobilePhone", "officeLocation", "department", 
+                    "jobTitle", "companyName", "country", "usageLocation", "accountEnabled"
                 };
 
                 var graphUser = await _graphClient.Users[userId]
@@ -235,6 +264,67 @@ namespace TeamsAccountManager.Services
                 _logger.LogError(ex, $"ユーザー {user.DisplayName} の更新中にエラーが発生");
                 user.ErrorMessage = ex.Message;
                 return false;
+            }
+        }
+
+        /// <summary>
+        /// ユーザー情報を部分更新
+        /// </summary>
+        public async Task<UpdateResult> UpdateUserPartialAsync(string userId, Dictionary<string, object> changes)
+        {
+            try
+            {
+                InitializeGraphClient();
+                if (_graphClient == null)
+                {
+                    throw new InvalidOperationException("認証されていません");
+                }
+
+                var graphUser = new Microsoft.Graph.Models.User();
+                
+                // 変更されたプロパティのみ設定
+                foreach (var change in changes)
+                {
+                    switch (change.Key)
+                    {
+                        case nameof(Models.User.DisplayName):
+                            graphUser.DisplayName = change.Value?.ToString();
+                            break;
+                        case nameof(Models.User.Department):
+                            graphUser.Department = change.Value?.ToString();
+                            break;
+                        case nameof(Models.User.JobTitle):
+                            graphUser.JobTitle = change.Value?.ToString();
+                            break;
+                        case nameof(Models.User.OfficeLocation):
+                            graphUser.OfficeLocation = change.Value?.ToString();
+                            break;
+                        case nameof(Models.User.PhoneNumber):
+                            graphUser.BusinessPhones = change.Value != null 
+                                ? new List<string> { change.Value.ToString()! } 
+                                : new List<string>();
+                            break;
+                        case nameof(Models.User.AccountEnabled):
+                            graphUser.AccountEnabled = change.Value as bool?;
+                            break;
+                    }
+                }
+
+                await _graphClient.Users[userId]
+                    .PatchAsync(graphUser);
+
+                _logger.LogInformation($"ユーザー {userId} の情報を部分更新");
+                return new UpdateResult { Success = true, UserId = userId };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"ユーザー {userId} の部分更新中にエラーが発生");
+                return new UpdateResult 
+                { 
+                    Success = false, 
+                    UserId = userId, 
+                    ErrorMessage = ex.Message 
+                };
             }
         }
 
@@ -306,10 +396,9 @@ namespace TeamsAccountManager.Services
                 
                 var selectProperties = new[]
                 {
-                    "id", "businessPhones", "displayName", "givenName", "jobTitle", "mail",
-                    "mobilePhone", "officeLocation", "preferredLanguage", "surname", 
-                    "userPrincipalName", "department", "companyName", "country", "city",
-                    "postalCode", "state", "usageLocation", "accountEnabled"
+                    "id", "displayName", "givenName", "surname", "mail", "userPrincipalName",
+                    "businessPhones", "mobilePhone", "officeLocation", "department", 
+                    "jobTitle", "companyName", "country", "usageLocation", "accountEnabled"
                 };
 
                 var response = await _graphClient.Users
